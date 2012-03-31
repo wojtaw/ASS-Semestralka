@@ -1,16 +1,13 @@
 package ass.pool;
 
-public class ConnectionFactory<E> implements FondFactory<E> {
+import ass.server.ServerConnection;
 
-	public ConnectionFactory(){
-		ServerConnection test = new ServerConnection();
-	}
+public class ConnectionFactory implements FondFactory<ServerConnection> {
+
 	
 	@Override
 	public ServerConnection create() {
-		//WTF? I do not get it :( Abstract instances suxx
-		ServerConnection testCon = new ServerConnection();
-		return testCon;
+		return new ServerConnection();
 	}
 
 }

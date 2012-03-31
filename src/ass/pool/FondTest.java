@@ -2,6 +2,8 @@ package ass.pool;
 
 import org.junit.Ignore;
 import org.junit.Test;
+
+import ass.server.ServerConnection;
 import static org.junit.Assert.*;
 
 
@@ -15,7 +17,7 @@ public class FondTest {
 	
 	@Test
 	public void testFondCreation(){
-		//ConnectionFond fond = new ConnectionFond();
+		//ConnectionFond fond = new ConnectionFond<new ConnectionFactory()>();
 		//assertTrue(fond != null);
 	}
 	

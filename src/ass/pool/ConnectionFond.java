@@ -44,7 +44,6 @@ public class ConnectionFond <E extends Comparable<E>>{
 	}
 	
 	private E createNewInstance() {
-		//<E> newInstance = new <E>();
 		E newInstance = factory.create();
 		return newInstance;
 	}

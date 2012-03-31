@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.StringTokenizer;
 import java.io.*;
 import java.net.*;
+import ass.pool.*;
 
 public class WebServer {
 	private String recievedRequest;
@@ -21,6 +22,8 @@ public class WebServer {
 	private String serverDirectory = "C:\\vojtaciml\\eclipse_work\\ASS_Week4_server1\\src\\wwwFiles";
 	private Thread serviceThread;
 	
+	private ConnectionFond<Integer> serverFond;
+	
 	
 	private int portNumber;
 	protected boolean serverOn = false;
@@ -31,6 +34,10 @@ public class WebServer {
 		this.portNumber = portNumber;
 		startServer();
 	
+	}
+	
+	private void createThreadPool(){
+		
 	}
 	
 	public void startServer() {
