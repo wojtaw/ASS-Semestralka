@@ -22,7 +22,7 @@ public class WebServer {
 	private String serverDirectory = "C:\\vojtaciml\\eclipse_work\\ASS_Week4_server1\\src\\wwwFiles";
 	private Thread serviceThread;
 	
-	private ConnectionFond<Integer> serverFond;
+	private PoolGeneral<Integer> serverFond;
 	
 	
 	private int portNumber;

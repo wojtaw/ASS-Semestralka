@@ -2,7 +2,7 @@ package ass.pool;
 
 import ass.server.ServerConnection;
 
-public class ConnectionFactory implements FondFactory<ServerConnection> {
+public class PoolFactory implements FondFactory<ServerConnection> {
 
 	
 	@Override

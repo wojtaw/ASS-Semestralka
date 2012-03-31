@@ -1,4 +1,5 @@
-package ass.server;
+package ass.start;
+
 
 
 public class Main {

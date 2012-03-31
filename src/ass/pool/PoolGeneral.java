@@ -3,17 +3,17 @@ package ass.pool;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class ConnectionFond <E extends Comparable<E>>{
+public class PoolGeneral <E extends Comparable<E>>{
 	private int fondCapacity = 50;
 	private Queue<E> requestsQueue;
 	private final FondFactory<E> factory;
 	
-	public ConnectionFond(FondFactory<E> factory) {
+	public PoolGeneral(FondFactory<E> factory) {
 		this.factory = factory;
 		init();
 	}
 	
-	public ConnectionFond(int capacity, FondFactory<E> factory){
+	public PoolGeneral(int capacity, FondFactory<E> factory){
 		this.fondCapacity = capacity;
 		this.factory = factory;
 		init();
