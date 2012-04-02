@@ -8,10 +8,11 @@ import ass.pool.PoolFactoryInterface;
 import ass.server.ServerConnectionProcessing;
 import ass.utils.ApplicationOutput;
 
-public class ThreadPool {
+public class ThreadPool extends Thread{
 	private int fondCapacity = 15;
 	private int readyConnections;
 	private Queue<ServerConnectionProcessing> requestsQueue;
+	private boolean poolIsOn = false;
 	
 	public ThreadPool(int capacity){
 		this.fondCapacity = capacity;
@@ -21,6 +22,12 @@ public class ThreadPool {
 	public ThreadPool(){
 		init();
 	}	
+	
+	public void run(){
+		while(poolIsOn){
+			
+		}
+	}
 	
 	private void init(){
 		//We will make 10 initial Threads ready in queue, this can be changed as desired
@@ -36,7 +43,7 @@ public class ThreadPool {
 		}
 	}
 	
-	public synchronized void requestProcessing(BufferedReader recievedRequest){
+	public synchronized void requestProcessing(String recievedRequest){
 		ServerConnectionProcessing serverConnectionWorker;
 		if(requestsQueue.size() == 0) serverConnectionWorker = createNewInstance();
 		else serverConnectionWorker = requestsQueue.poll();

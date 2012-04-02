@@ -17,8 +17,7 @@ public class ServerConnectionProcessing extends Thread{
 	
 	private int portNumber;
 	private ServerSocket serverSocket;
-	private String clientSentence;
-	private BufferedReader inFromClient = null;
+	private String inFromClient = null;
 	
 	private String recievedRequest;
 	private String reqMethod;
@@ -40,33 +39,21 @@ public class ServerConnectionProcessing extends Thread{
 	}
 	
 	public void run(){
-		ApplicationOutput.printLog("Up and running");
-    	try {
-
-            String tmpStr = inFromClient.readLine();
-            while(tmpStr != null){
-            	clientSentence += (tmpStr + "\r\n");
-            	tmpStr = inFromClient.readLine();
-            }
-            
-            ApplicationOutput.printLog("Something recieved");
-            recievedMessage(clientSentence);   
-            
-            ApplicationOutput.printLog("Thread should be terminated");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	  		
+		ApplicationOutput.printLog("Up and running on "+inFromClient);
+    	ApplicationOutput.printLog("Something processed");
+		if(inFromClient != null) recievedMessage(inFromClient);  
+		
+		ApplicationOutput.printLog("Thread should be terminated");	  		
 	}
 	
 	
 	
 	
-	public BufferedReader getInFromClient() {
+	public String getInFromClient() {
 		return inFromClient;
 	}
 
-	public void setInFromClient(BufferedReader inFromClient) {
+	public void setInFromClient(String inFromClient) {
 		this.inFromClient = inFromClient;
 	}
 

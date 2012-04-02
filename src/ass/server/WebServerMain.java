@@ -22,8 +22,13 @@ public class WebServerMain {
 		this.portNumber = portNumber;
 		createThreadPool();
 		startServer();
-	
 	} 
+	
+	public WebServerMain() {
+		ApplicationOutput.printLog("Server instance created");
+		createThreadPool();
+		startServer();
+	} 	
 	
 	private void createThreadPool() {
 		testPool = new ThreadPool(50);
@@ -36,8 +41,8 @@ public class WebServerMain {
 		serviceThread.start();		
 	}	
 	
-	private void processIncomingRequest(BufferedReader buffReader){
-		testPool.requestProcessing(buffReader);
+	private void processIncomingRequest(String requestData){
+		testPool.requestProcessing(requestData);
 	}
 	
 	class ServerListener implements Runnable {
@@ -55,7 +60,13 @@ public class WebServerMain {
 	            BufferedReader inFromClient =
 	               new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
 	            
-	            processIncomingRequest(inFromClient);
+	            String tmpStr = inFromClient.readLine();
+	            while(tmpStr != null){
+	            	clientSentence += (tmpStr + "\r\n");
+	            	tmpStr = inFromClient.readLine();
+	            }	            
+	            
+	            processIncomingRequest(clientSentence);
 	            
 	            ApplicationOutput.printLog("Something recieved");
 	         }	    	
