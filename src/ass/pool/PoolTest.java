@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 public class PoolTest {
 	
 	public PoolTest(){
-		ServerConnection test = new ServerConnection();
+		ServerConnection test = new ServerConnection(8080);
 	}
 	
 	@Test

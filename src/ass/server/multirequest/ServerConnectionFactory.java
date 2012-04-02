@@ -8,7 +8,7 @@ public class ServerConnectionFactory implements PoolFactoryInterface<ServerConne
 	
 	@Override
 	public ServerConnection create() {
-		return new ServerConnection();
+		return new ServerConnection(8080);
 	}
 
 }
