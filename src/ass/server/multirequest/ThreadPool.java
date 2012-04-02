@@ -19,7 +19,6 @@ public class ThreadPool extends Thread{
 		try {
 			init();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -28,7 +27,6 @@ public class ThreadPool extends Thread{
 		try {
 			init();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}	
@@ -67,7 +65,7 @@ public class ThreadPool extends Thread{
 	
 	public synchronized void closeConnection(ServerConnectionProcessing returnedCon){
 		//Put it into pool
-		requestsQueue.add(returnedCon);
+		//requestsQueue.add(returnedCon);
 	}	
 		
 

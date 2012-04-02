@@ -30,7 +30,7 @@ public class WebServer {
 	} 	
 	
 	private void createThreadPool() {
-		testPool = new ThreadPool(8);
+		testPool = new ThreadPool(80);
 	}
 
 	public void startServer() {

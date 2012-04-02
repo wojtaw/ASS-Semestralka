@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 
 import ass.pool.PoolGeneral;
 import ass.server.multirequest.ThreadPool;
@@ -39,7 +40,7 @@ public class ServerConnectionProcessing extends Thread{
 		if(inFromClient != null && !inFromClient.equals("")) {
 			recievedMessage(inFromClient);  
 			ApplicationOutput.printLog("Thread should be returned to the pool or terminated");
-			returnThisConnection();
+			//returnThisConnection();
 		}
 	}
 	
@@ -78,15 +79,19 @@ public class ServerConnectionProcessing extends Thread{
 		
 		//For rest of the parameters, parse type of parameter, if it is wanted
 		//Than assign value
-		for (int i = 1; i < parameters.length; i++) {
+		ApplicationOutput.printErr(parameters.length+"");
+		for (int i = 1; i < parameters.length; i++) {		
 			workingStr = parameters[i];
 			delimiter = workingStr.indexOf(':');
+			if(delimiter == -1 && i == (parameters.length-1)) continue;
 			parameterType = workingStr.substring(0, delimiter);
 			parameterContent = workingStr.substring(delimiter+2, workingStr.length());
 			assignValues(parameterType, parameterContent);
+			ApplicationOutput.printErr("Asigning "+parameterType+" to "+parameterContent);
 		}
 
-		printOutRecievedValues();
+		ApplicationOutput.printLog("DOSTAL JSEM SE K HODNOTAM");		
+		//printOutRecievedValues();s
 		return true;
 	}	
 	
@@ -127,7 +132,49 @@ public class ServerConnectionProcessing extends Thread{
 	
 	private void sendAnswer() throws Exception{
 
+	}
+
+	public String getReqMethod() {
+		return reqMethod;
+	}
+
+	public String getReqPath() {
+		return reqPath;
+	}
+
+	public String getReqHost() {
+		return reqHost;
+	}
+
+	public String getReqUserAgent() {
+		return reqUserAgent;
+	}
+
+	public String getReqAccept() {
+		return reqAccept;
+	}
+
+	public String getReqConnection() {
+		return reqConnection;
+	}
+
+	public String getReqCookie() {
+		return reqCookie;
+	}
+
+	public String getReqAcceptLanguage() {
+		return reqAcceptLanguage;
+	}
+
+	public String getReqAcceptEncoding() {
+		return reqAcceptEncoding;
+	}
+
+	public String getReqAcceptCharset() {
+		return reqAcceptCharset;
 	}	
+	
+	
 	
 	
 }
