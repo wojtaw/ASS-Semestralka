@@ -11,15 +11,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import ass.pool.PoolGeneral;
+import ass.server.multirequest.ThreadPool;
 import ass.utils.ApplicationOutput;
 
 public class ServerConnectionProcessing extends Thread{
-	
-	private int portNumber;
-	private ServerSocket serverSocket;
 	private String inFromClient = null;
-	
-	private String recievedRequest;
 	private String reqMethod;
 	private String reqPath;
 	private String reqHost;	
@@ -30,21 +26,32 @@ public class ServerConnectionProcessing extends Thread{
 	private String reqAcceptLanguage;
 	private String reqAcceptEncoding;
 	private String reqAcceptCharset;	
-	private String serverDirectory = "C:\\vojtaciml\\eclipse_work\\ASS_Week4_server1\\src\\wwwFiles";	
+	private String serverDirectory = "C:\\vojtaciml\\eclipse_work\\ASS_Week4_server1\\src\\wwwFiles";
+	private ThreadPool homePool = null;
 	
-	public ServerConnectionProcessing(){
-		this.portNumber = portNumber;
+	public ServerConnectionProcessing(ThreadPool homePool){
+		this.homePool = homePool;
 		ApplicationOutput.printLog("Hello everybody, here's server connection");
 	}
 	
 	public void run(){
 		ApplicationOutput.printLog("Up and running on "+inFromClient);
-    	ApplicationOutput.printLog("Something processed");
-		if(inFromClient != null) recievedMessage(inFromClient);  
-		
-		ApplicationOutput.printLog("Thread should be terminated");	  		
+		if(inFromClient != null) {
+			recievedMessage(inFromClient);  
+			ApplicationOutput.printLog("Thread should be returned to the pool or terminated");
+			returnThisConnection();
+		}
 	}
 	
+
+	private void returnThisConnection() {
+		if(homePool == null) return;
+		//We have to null all values
+		
+		//Then we can return this thread to the pool
+		homePool.closeConnection(this);
+		
+	}
 
 	public String getInFromClient() {
 		return inFromClient;

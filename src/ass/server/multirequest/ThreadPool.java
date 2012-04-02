@@ -16,11 +16,21 @@ public class ThreadPool extends Thread{
 	
 	public ThreadPool(int capacity){
 		this.fondCapacity = capacity;
-		init();
+		try {
+			init();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public ThreadPool(){
-		init();
+		try {
+			init();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}	
 	
 	public void run(){
@@ -29,16 +39,16 @@ public class ThreadPool extends Thread{
 		}
 	}
 	
-	private void init(){
+	private void init() throws InterruptedException{
 		//We will make 10 initial Threads ready in queue, this can be changed as desired
-		if(fondCapacity > 10) readyConnections = fondCapacity / 2;
+		if(fondCapacity > 5) readyConnections = fondCapacity / 2;
 		else readyConnections = fondCapacity;
 		ApplicationOutput.printLog("Fond will create: "+readyConnections);
 		
 		requestsQueue = new LinkedList<ServerConnectionProcessing>();
 		
 		for (int i = 0; i < readyConnections; i++) {
-			ServerConnectionProcessing tmpConnection = new ServerConnectionProcessing();
+			ServerConnectionProcessing tmpConnection = new ServerConnectionProcessing(this);
 			requestsQueue.add(tmpConnection);
 		}
 	}
@@ -52,7 +62,19 @@ public class ThreadPool extends Thread{
 	}
 		
 	private ServerConnectionProcessing createNewInstance() {
-		return new ServerConnectionProcessing();
+		return new ServerConnectionProcessing(this);
+	}	
+	
+	public synchronized void closeConnection(ServerConnectionProcessing returnedCon){
+		//Stop thread
+		try {
+			returnedCon.wait();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//Put it into pool
+		requestsQueue.add(returnedCon);
 	}	
 		
 
