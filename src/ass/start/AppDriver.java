@@ -1,11 +1,12 @@
 package ass.start;
 
-import ass.server.WebServerTest;
+import ass.server.multirequest.ThreadPoolTest;
 
 public class AppDriver {
 	
 	public AppDriver(){
-		WebServerTest webServerTest = new WebServerTest();
+		ThreadPoolTest threadPoolTest = new ThreadPoolTest();
+		threadPoolTest.testPoolCreation();
 	}
 
 }

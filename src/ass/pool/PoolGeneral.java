@@ -8,9 +8,6 @@ public class PoolGeneral <E>{
 	private Queue<E> requestsQueue;
 	private final PoolFactoryInterface<E> factory;
 	
-	public PoolGeneral() {
-		factory = null;
-	}	
 	
 	public PoolGeneral(PoolFactoryInterface<E> factory) {
 		this.factory = factory;
@@ -29,11 +26,12 @@ public class PoolGeneral <E>{
 		if(fondCapacity > 10) tmpNum = 10;
 		else tmpNum = fondCapacity;
 		
+		requestsQueue = new LinkedList<E>();
+		
 		for (int i = 0; i < tmpNum; i++) {
 			requestsQueue.add(createNewInstance());
 		}
 		
-		requestsQueue = new LinkedList<E>();
 	}
 	
 	public synchronized E requestConnection(){
@@ -50,6 +48,10 @@ public class PoolGeneral <E>{
 	private E createNewInstance() {
 		E newInstance = factory.create();
 		return newInstance;
+	}
+	
+	public int getCapacity(){
+		return fondCapacity;
 	}
 
 	
