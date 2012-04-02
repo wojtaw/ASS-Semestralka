@@ -13,8 +13,15 @@ public class ThreadPoolTest {
 	
 	@Test
 	@Ignore
-	public void testPoolCreation(){
+	public void testGeneralPoolCreation(){
 		PoolGeneral<ServerConnection> testPool = new PoolGeneral<ServerConnection>(100, new ServerConnectionFactory());
 		assertEquals(100, testPool.getCapacity());
 	}
+	
+	
+	@Test	
+	public void testThreadPoolCreation(){
+		PoolGeneral<ServerConnection> testPool = new PoolGeneral<ServerConnection>(100, new ServerConnectionFactory());
+		assertEquals(100, testPool.getCapacity());
+	}	
 }

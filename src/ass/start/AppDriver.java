@@ -6,7 +6,7 @@ public class AppDriver {
 	
 	public AppDriver(){
 		ThreadPoolTest threadPoolTest = new ThreadPoolTest();
-		threadPoolTest.testPoolCreation();
+		threadPoolTest.testGeneralPoolCreation();
 	}
 
 }
