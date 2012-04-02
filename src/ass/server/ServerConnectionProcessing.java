@@ -13,11 +13,12 @@ import java.net.Socket;
 import ass.pool.PoolGeneral;
 import ass.utils.ApplicationOutput;
 
-public class ServerConnection extends Thread{
+public class ServerConnectionProcessing extends Thread{
 	
 	private int portNumber;
 	private ServerSocket serverSocket;
 	private String clientSentence;
+	private BufferedReader inFromClient = null;
 	
 	private String recievedRequest;
 	private String reqMethod;
@@ -33,7 +34,7 @@ public class ServerConnection extends Thread{
 	private String serverDirectory = "C:\\vojtaciml\\eclipse_work\\ASS_Week4_server1\\src\\wwwFiles";
 	private Thread serviceThread;	
 	
-	public ServerConnection(int portNumber){
+	public ServerConnectionProcessing(){
 		this.portNumber = portNumber;
 		ApplicationOutput.printLog("Hello everybody, here's server connection");
 	}
@@ -41,14 +42,7 @@ public class ServerConnection extends Thread{
 	public void run(){
 		ApplicationOutput.printLog("Up and running");
     	try {
-			serverSocket = new ServerSocket(portNumber);
-			ApplicationOutput.printLog("Socket created listening on port "+portNumber);
 
-			ApplicationOutput.printLog("Accepting message");
-            Socket connectionSocket = serverSocket.accept();
-            BufferedReader inFromClient =
-               new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
-            
             String tmpStr = inFromClient.readLine();
             while(tmpStr != null){
             	clientSentence += (tmpStr + "\r\n");
@@ -65,6 +59,17 @@ public class ServerConnection extends Thread{
 		}	  		
 	}
 	
+	
+	
+	
+	public BufferedReader getInFromClient() {
+		return inFromClient;
+	}
+
+	public void setInFromClient(BufferedReader inFromClient) {
+		this.inFromClient = inFromClient;
+	}
+
 	private boolean parseRequestValues(String recReq) {
 		String[] parameters = recReq.split("\r\n");
 		String workingStr;

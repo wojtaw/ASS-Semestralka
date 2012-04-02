@@ -7,16 +7,9 @@ import static org.junit.Assert.*;
 
 
 import ass.pool.PoolGeneral;
-import ass.server.ServerConnection;
+import ass.server.ServerConnectionProcessing;
 
 public class ThreadPoolTest {
-	
-	@Test
-	@Ignore
-	public void testGeneralPoolCreation(){
-		PoolGeneral<ServerConnection> testPool = new PoolGeneral<ServerConnection>(100, new ServerConnectionFactory());
-		assertEquals(100, testPool.getCapacity());
-	}
 	
 	
 	@Test	

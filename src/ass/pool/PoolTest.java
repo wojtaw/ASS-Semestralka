@@ -3,7 +3,7 @@ package ass.pool;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import ass.server.ServerConnection;
+import ass.server.ServerConnectionProcessing;
 
 
 import static org.junit.Assert.*;
@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 public class PoolTest {
 	
 	public PoolTest(){
-		ServerConnection test = new ServerConnection(8080);
+		ServerConnectionProcessing test = new ServerConnectionProcessing();
 	}
 	
 	@Test
