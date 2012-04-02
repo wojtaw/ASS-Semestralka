@@ -58,7 +58,7 @@ public class ThreadPool extends Thread{
 		if(requestsQueue.size() == 0) serverConnectionWorker = createNewInstance();
 		else serverConnectionWorker = requestsQueue.poll();
 		serverConnectionWorker.setInFromClient(recievedRequest);
-		serverConnectionWorker.start();
+		if(!serverConnectionWorker.isAlive()) serverConnectionWorker.start();
 	}
 		
 	private ServerConnectionProcessing createNewInstance() {
@@ -66,13 +66,6 @@ public class ThreadPool extends Thread{
 	}	
 	
 	public synchronized void closeConnection(ServerConnectionProcessing returnedCon){
-		//Stop thread
-		try {
-			returnedCon.wait();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		//Put it into pool
 		requestsQueue.add(returnedCon);
 	}	

@@ -35,8 +35,8 @@ public class ServerConnectionProcessing extends Thread{
 	}
 	
 	public void run(){
-		ApplicationOutput.printLog("Up and running on "+inFromClient);
-		if(inFromClient != null) {
+		ApplicationOutput.printWarn("Up and running on ::::"+inFromClient);
+		if(inFromClient != null && !inFromClient.equals("")) {
 			recievedMessage(inFromClient);  
 			ApplicationOutput.printLog("Thread should be returned to the pool or terminated");
 			returnThisConnection();
@@ -47,10 +47,10 @@ public class ServerConnectionProcessing extends Thread{
 	private void returnThisConnection() {
 		if(homePool == null) return;
 		//We have to null all values
+		inFromClient = "";
 		
 		//Then we can return this thread to the pool
 		homePool.closeConnection(this);
-		
 	}
 
 	public String getInFromClient() {
