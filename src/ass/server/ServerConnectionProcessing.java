@@ -30,8 +30,7 @@ public class ServerConnectionProcessing extends Thread{
 	private String reqAcceptLanguage;
 	private String reqAcceptEncoding;
 	private String reqAcceptCharset;	
-	private String serverDirectory = "C:\\vojtaciml\\eclipse_work\\ASS_Week4_server1\\src\\wwwFiles";
-	private Thread serviceThread;	
+	private String serverDirectory = "C:\\vojtaciml\\eclipse_work\\ASS_Week4_server1\\src\\wwwFiles";	
 	
 	public ServerConnectionProcessing(){
 		this.portNumber = portNumber;
@@ -46,9 +45,7 @@ public class ServerConnectionProcessing extends Thread{
 		ApplicationOutput.printLog("Thread should be terminated");	  		
 	}
 	
-	
-	
-	
+
 	public String getInFromClient() {
 		return inFromClient;
 	}
@@ -122,26 +119,7 @@ public class ServerConnectionProcessing extends Thread{
 	}
 	
 	private void sendAnswer() throws Exception{
-		File transfer = new File(serverDirectory+""+reqPath);
-		InputStream in = new FileInputStream(transfer);
-		ServerSocket server = new ServerSocket(440);
-		Socket connection = server.accept();
-		
-		OutputStream output = connection.getOutputStream();
-		
-		byte[] buff = new byte[connection.getSendBufferSize()];
-		int bytesRead = 0;
-		
-		ApplicationOutput.printLog(transfer.length()+ " bytes");
-		
-		while((bytesRead = in.read(buff))>0)
-		{
-			output.write(buff,0,bytesRead);
-		}
-		in.close();
-		server.close();
-		connection.close();
-		output.close();
+
 	}	
 	
 	

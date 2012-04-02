@@ -1,4 +1,4 @@
-package ass.server.request;
+package ass.tests;
 
 public class ServerConnectionTest {
 	

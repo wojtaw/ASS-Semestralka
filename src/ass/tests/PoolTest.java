@@ -1,4 +1,4 @@
-package ass.pool;
+package ass.tests;
 
 import org.junit.Ignore;
 import org.junit.Test;
