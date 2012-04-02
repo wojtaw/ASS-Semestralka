@@ -25,7 +25,7 @@ public class WebServer {
 	private PoolGeneral<Integer> serverFond;
 	
 	
-	private int portNumber;
+	public int portNumber;
 	protected boolean serverOn = false;
     protected ServerSocket serverSocket = null;	
 	

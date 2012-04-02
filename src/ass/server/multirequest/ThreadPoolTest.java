@@ -21,7 +21,7 @@ public class ThreadPoolTest {
 	
 	@Test	
 	public void testThreadPoolCreation(){
-		PoolGeneral<ServerConnection> testPool = new PoolGeneral<ServerConnection>(100, new ServerConnectionFactory());
-		assertEquals(100, testPool.getCapacity());
+		ThreadPool testPool = new ThreadPool(50);
+		assertEquals(50, testPool.getCapacity());
 	}	
 }
