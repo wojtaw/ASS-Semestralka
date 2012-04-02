@@ -9,9 +9,9 @@ import static org.junit.Assert.*;
 
 
 
-public class FondTest {
+public class PoolTest {
 	
-	public FondTest(){
+	public PoolTest(){
 		ServerConnection test = new ServerConnection();
 	}
 	

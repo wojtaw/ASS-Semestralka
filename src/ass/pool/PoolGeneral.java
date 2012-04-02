@@ -6,14 +6,14 @@ import java.util.Queue;
 public class PoolGeneral <E extends Comparable<E>>{
 	private int fondCapacity = 50;
 	private Queue<E> requestsQueue;
-	private final FondFactory<E> factory;
+	private final PoolFactory<E> factory;
 	
-	public PoolGeneral(FondFactory<E> factory) {
+	public PoolGeneral(PoolFactory<E> factory) {
 		this.factory = factory;
 		init();
 	}
 	
-	public PoolGeneral(int capacity, FondFactory<E> factory){
+	public PoolGeneral(int capacity, PoolFactory<E> factory){
 		this.fondCapacity = capacity;
 		this.factory = factory;
 		init();
