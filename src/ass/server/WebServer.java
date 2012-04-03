@@ -5,16 +5,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 import ass.server.multirequest.ThreadPool;
 import ass.utils.ApplicationOutput;
 
 public class WebServer {
 	public int portNumber = 8080; //Default port for our webserver
-	protected boolean serverOn = false;
+	public boolean serverOn = false;
     protected ServerSocket serverSocket = null;	
 	private Thread serviceThread;   
 	private ThreadPool testPool;
+	private Socket connectionSocket;
     
 	public WebServer(int portNumber) {
 		ApplicationOutput.printLog("Server instance created");
@@ -55,7 +57,7 @@ public class WebServer {
 	         while(serverOn)
 	         {
 	        	ApplicationOutput.printLog("Accepting message");
-	            Socket connectionSocket = serverSocket.accept();
+	            connectionSocket = serverSocket.accept();
 	            BufferedReader inFromClient =
 	               new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
 	            
@@ -69,10 +71,21 @@ public class WebServer {
 	            
 	            ApplicationOutput.printLog("Something recieved");
 	         }	    	
+			} catch (SocketException e) {
+				ApplicationOutput.printWarn("SERVER WAS STILL LISTENING");				
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				e.printStackTrace();				
 			}	    	
 	    }
+	}
+
+	public void terminateServer() {
+		try {
+			serverOn = false;
+			if(connectionSocket != null) connectionSocket.close();
+			if(serverSocket != null) serverSocket.close();			
+		} catch (IOException e) {
+			ApplicationOutput.printErr("Closing server failed");
+		}
 	}	
 }
