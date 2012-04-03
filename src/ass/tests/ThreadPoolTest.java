@@ -6,7 +6,7 @@ import static org.junit.Assert.*;
 
 
 
-import ass.pool.PoolGeneral;
+import ass.generalPool.PoolGeneral;
 import ass.server.ServerConnectionProcessing;
 import ass.server.multirequest.ThreadPool;
 

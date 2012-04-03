@@ -1,4 +1,4 @@
-package ass.pool;
+package ass.generalPool;
 
 import java.util.LinkedList;
 import java.util.Queue;

@@ -11,7 +11,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Arrays;
 
-import ass.pool.PoolGeneral;
+import ass.generalPool.PoolGeneral;
 import ass.server.multirequest.ThreadPool;
 import ass.utils.ApplicationOutput;
 
@@ -40,7 +40,7 @@ public class ServerConnectionProcessing extends Thread{
 		if(inFromClient != null && !inFromClient.equals("")) {
 			recievedMessage(inFromClient);  
 			ApplicationOutput.printLog("Thread should be returned to the pool or terminated");
-			//returnThisConnection();
+			returnThisConnection();
 		}
 	}
 	
@@ -91,7 +91,7 @@ public class ServerConnectionProcessing extends Thread{
 		}
 
 		ApplicationOutput.printLog("DOSTAL JSEM SE K HODNOTAM");		
-		//printOutRecievedValues();s
+		//printOutRecievedValues();
 		return true;
 	}	
 	

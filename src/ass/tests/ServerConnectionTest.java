@@ -7,7 +7,7 @@ import ass.server.ServerConnectionProcessing;
 
 public class ServerConnectionTest {
 	
-	private String sampleReq = "GET /testImage.jpg HTTP/1.1\r\n  Host: localhost\r\n \r\n";
+	private String sampleReq = "GET /testImage.jpg HTTP/1.1\r\nHost: localhost\r\n \r\n";
 	
 	@Test
 	public void SingleRequestTest(){
@@ -17,6 +17,7 @@ public class ServerConnectionTest {
 		
 		try {
 			Thread.sleep(500);
+			myProcessing.printOutRecievedValues();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

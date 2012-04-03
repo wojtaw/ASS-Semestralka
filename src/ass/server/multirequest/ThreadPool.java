@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import ass.pool.PoolFactoryInterface;
+import ass.generalPool.PoolFactoryInterface;
 import ass.server.ServerConnectionProcessing;
 import ass.utils.ApplicationOutput;
 
