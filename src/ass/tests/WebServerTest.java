@@ -99,20 +99,35 @@ public class WebServerTest {
 	}
 	
 	@Test
+	@Ignore
+	public void testPreparedThreadsNumber() throws Exception{
+		WebServer webServer= new WebServer(8080);	
+
+		Thread.sleep(1000);
+		assertEquals(webServer.getTestThreadPool().getCapacity(), webServer.getTestThreadPool().getTestFreeThreads());
+		
+		webServer.terminateServer();
+		Thread.sleep(200);
+		assertFalse(webServer.serverOn);			
+	}
+	
+	@Test
 	public void runWebServerAndSendSingleRequest() throws Exception{
 		WebServer webServer= new WebServer(8080);	
 
 		Thread.sleep(1000);
-		assertEquals(5, webServer.getTestThreadPool().getTestFreeThreads());
+		assertEquals(webServer.getTestThreadPool().getCapacity(), webServer.getTestThreadPool().getTestFreeThreads());
 		
 		startClientConnection();
 
 		Thread.sleep(300);	
-		
 		sendRequest(advancedReq);
-		Thread.sleep(100);					
+		Thread.sleep(100);		
+
+		assertEquals(webServer.getTestThreadPool().getCapacity(), webServer.getTestThreadPool().getTestFreeThreads());		
 		
 		endClientConnection();
+		Thread.sleep(200);
 		webServer.terminateServer();
 		Thread.sleep(200);
 		assertFalse(webServer.serverOn);		

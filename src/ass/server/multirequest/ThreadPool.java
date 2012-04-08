@@ -11,7 +11,6 @@ import ass.utils.ApplicationOutput;
 
 public class ThreadPool extends Thread{
 	private int fondCapacity = 15;
-	private int readyConnections;
 	private Queue<ServerConnectionProcessing> requestsQueue;
 	private boolean poolIsOn = false;
 	
@@ -40,28 +39,26 @@ public class ThreadPool extends Thread{
 	
 	private synchronized void init() throws InterruptedException{
 		//We will make 10 initial Threads ready in queue, this can be changed as desired
-		if(fondCapacity > 5) readyConnections = fondCapacity / 2;
-		else readyConnections = fondCapacity;
-		ApplicationOutput.printLog("Fond will create: "+readyConnections);
+		ApplicationOutput.printLog("Fond will create: "+fondCapacity);
 		
 		requestsQueue = new LinkedList<ServerConnectionProcessing>();
 		
-		for (int i = 0; i < readyConnections; i++) {
+		for (int i = 0; i < fondCapacity; i++) {
 			ServerConnectionProcessing tmpConnection = new ServerConnectionProcessing(this);
 			tmpConnection.start();
-			requestsQueue.add(tmpConnection);
 		}
 	}
 	
 	public void requestProcessing(String recievedRequest){
 		//First figure out if there is more requests in single string, split it
+		ApplicationOutput.printWarn("WORMHOLE"+recievedRequest);
 		String singleRequest = "";
 		String tmpStr = "";
 		for (int i = 0; i < recievedRequest.length(); i++) {
 			tmpStr+=recievedRequest.charAt(i);
 			if(tmpStr.charAt(tmpStr.length()-1)=='\n' && tmpStr.charAt(tmpStr.length()-2)=='\r') {
 				//Check wether it contains HTTP sign, if not add it to the request
-				if(tmpStr.contains("HTTP/1") && tmpStr.length()>1){
+				if(tmpStr.contains("HTTP/1") && singleRequest.length()>3){
 					processSingleRequest(singleRequest);
 					singleRequest = tmpStr;
 				} else {
@@ -74,7 +71,8 @@ public class ThreadPool extends Thread{
 
 	}
 	
-	private void processSingleRequest(String recievedRequest){
+	private synchronized void processSingleRequest(String recievedRequest){
+		ApplicationOutput.printWarn("INCOMING WORMHOLE: "+recievedRequest);
 		ApplicationOutput.printWarn("Remaining threads in pool: "+requestsQueue.size());
 		ServerConnectionProcessing serverConnectionWorker;
 		if(requestsQueue.size() == 0) serverConnectionWorker = createNewInstance();

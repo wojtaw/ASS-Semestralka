@@ -83,10 +83,11 @@ public class WebServer {
 		try {
 			serverOn = false;
 			if(connectionSocket != null) connectionSocket.close();
-			if(serverSocket != null) serverSocket.close();			
+			if(serverSocket != null) serverSocket.close();
 		} catch (IOException e) {
 			ApplicationOutput.printErr("Closing server failed");
 		}
+		ApplicationOutput.printLog("SERVER CLOSED\n\n\n\n\n\n\n");
 	}	
 	
 	public ThreadPool getTestThreadPool(){
