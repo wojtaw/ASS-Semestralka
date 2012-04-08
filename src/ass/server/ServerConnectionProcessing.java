@@ -38,7 +38,6 @@ public class ServerConnectionProcessing extends Thread{
 	}
 	
 	public void run(){
-		ApplicationOutput.printWarn("Up and running on"+inFromClient);
 		while(true){			
 			synchronized (this) {			
 				try {
@@ -47,6 +46,7 @@ public class ServerConnectionProcessing extends Thread{
 					e.printStackTrace();
 				}
 			}
+			ApplicationOutput.printWarn("Up and running on"+inFromClient);
 			if(inFromClient != null && !inFromClient.equals("")) {
 				recievedMessage(inFromClient);  
 				ApplicationOutput.printLog("Thread should be returned to the pool or terminated");

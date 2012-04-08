@@ -53,7 +53,7 @@ public class ThreadPool extends Thread{
 		}
 	}
 	
-	public synchronized void requestProcessing(String recievedRequest){
+	public void requestProcessing(String recievedRequest){
 		//First figure out if there is more requests in single string, split it
 		String singleRequest = "";
 		String tmpStr = "";
@@ -74,7 +74,8 @@ public class ThreadPool extends Thread{
 
 	}
 	
-	private synchronized void processSingleRequest(String recievedRequest){
+	private void processSingleRequest(String recievedRequest){
+		ApplicationOutput.printWarn("Remaining threads in pool: "+requestsQueue.size());
 		ServerConnectionProcessing serverConnectionWorker;
 		if(requestsQueue.size() == 0) serverConnectionWorker = createNewInstance();
 		else {
@@ -84,17 +85,24 @@ public class ThreadPool extends Thread{
 		
 		serverConnectionWorker.setInFromClient(recievedRequest);
 		synchronized (serverConnectionWorker) {			
-			if(!serverConnectionWorker.isAlive()) serverConnectionWorker.notify();	
+			if(!serverConnectionWorker.isAlive()){
+				ApplicationOutput.printLog("Starting");
+				serverConnectionWorker.start();
+			} else {
+				ApplicationOutput.printLog("Notyfing");
+				serverConnectionWorker.notify();					
+			}
 		}			
 	}
 		
-	private ServerConnectionProcessing createNewInstance() {
+	private ServerConnectionProcessing createNewInstance() {		
 		return new ServerConnectionProcessing(this);
 	}	
 	
-	public synchronized void closeConnection(ServerConnectionProcessing returnedCon){
+	public synchronized void closeConnection(ServerConnectionProcessing returnedCon){		
+		ApplicationOutput.printLog("Returning USED THREAD");
 		//Put it into pool
-		//requestsQueue.add(returnedCon);
+		requestsQueue.add(returnedCon);
 	}	
 		
 

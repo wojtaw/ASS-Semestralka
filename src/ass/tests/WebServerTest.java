@@ -127,9 +127,9 @@ public class WebServerTest {
 
 		Thread.sleep(300);	
 		
-		for (int i = 0; i < 15; i++) {
+		for (int i = 0; i < 5; i++) {
 			sendRequest(advancedReq);
-			Thread.sleep(50);	
+			Thread.sleep(500);	
 		}		
 		
 		endClientConnection();
