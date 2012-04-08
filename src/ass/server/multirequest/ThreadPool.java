@@ -42,17 +42,15 @@ public class ThreadPool extends Thread{
 
 			if(requestsQueueReference.size() > 0){
 				requestProcessing(requestsQueueReference.poll());
-			}
-			/*
-			if(requestsQueue.size() > fondCapacity){
-				int difference = requestsQueue.size() - fondCapacity;
-				ApplicationOutput.printWarn("TIME TO KILL SOME THREADS");
-				for (int i = 0; i < difference; i++) {
-					requestsQueue.poll();
+			} else {				
+				if(readyThreadsQueue.size() > fondCapacity){
+					int difference = readyThreadsQueue.size() - fondCapacity;
+					ApplicationOutput.printWarn("TIME TO KILL SOME THREADS");
+					for (int i = 0; i < difference; i++) {
+						readyThreadsQueue.poll();
+					}
 				}
 			}
-			*/
-			
 		}
 	}
 	
