@@ -32,7 +32,7 @@ public class WebServer {
 	} 	
 	
 	private void createThreadPool() {
-		testPool = new ThreadPool(80);
+		testPool = new ThreadPool(11);
 	}
 
 	public void startServer() {

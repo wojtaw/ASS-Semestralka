@@ -14,6 +14,7 @@ import java.util.Arrays;
 import ass.generalPool.PoolGeneral;
 import ass.server.multirequest.ThreadPool;
 import ass.utils.ApplicationOutput;
+import ass.utils.Lock;
 
 public class ServerConnectionProcessing extends Thread{
 	private String inFromClient = null;
@@ -29,6 +30,7 @@ public class ServerConnectionProcessing extends Thread{
 	private String reqAcceptCharset;	
 	private String serverDirectory = "C:\\vojtaciml\\eclipse_work\\ASS_Week4_server1\\src\\wwwFiles";
 	private ThreadPool homePool = null;
+	
 	
 	public ServerConnectionProcessing(ThreadPool homePool){
 		this.homePool = homePool;
@@ -79,15 +81,18 @@ public class ServerConnectionProcessing extends Thread{
 		
 		//For rest of the parameters, parse type of parameter, if it is wanted
 		//Than assign value
-		ApplicationOutput.printErr(parameters.length+"");
+		ApplicationOutput.printWarn(parameters.length+"");
 		for (int i = 1; i < parameters.length; i++) {		
 			workingStr = parameters[i];
 			delimiter = workingStr.indexOf(':');
-			if(delimiter == -1 && i == (parameters.length-1)) continue;
-			parameterType = workingStr.substring(0, delimiter);
-			parameterContent = workingStr.substring(delimiter+2, workingStr.length());
-			assignValues(parameterType, parameterContent);
-			ApplicationOutput.printErr("Asigning "+parameterType+" to "+parameterContent);
+			if(delimiter == -1 || i == (parameters.length-1)){
+				continue;
+			} else {				
+				parameterType = workingStr.substring(0, delimiter);
+				parameterContent = workingStr.substring(delimiter+2, workingStr.length());
+				assignValues(parameterType, parameterContent);
+				ApplicationOutput.printWarn("Asigning "+parameterType+" to "+parameterContent);
+			}
 		}
 
 		ApplicationOutput.printLog("DOSTAL JSEM SE K HODNOTAM");		
