@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import ass.generalPool.PoolFactoryInterface;
+import ass.server.HTTPRequestHolder;
 import ass.server.ServerConnectionProcessing;
 import ass.utils.ApplicationOutput;
 
@@ -13,10 +14,10 @@ public class ThreadPool extends Thread{
 	private int fondCapacity = 15;
 	private Queue<ServerConnectionProcessing> readyThreadsQueue;
 	public boolean poolIsOn = false;
-	private Queue<String> requestsQueueReference; 
+	private Queue<HTTPRequestHolder> requestsQueueReference; 
 	
 	
-	public ThreadPool(int capacity, Queue<String> requestsQueueReference){
+	public ThreadPool(int capacity, Queue<HTTPRequestHolder> requestsQueueReference){
 		this.requestsQueueReference = requestsQueueReference;
 		this.fondCapacity = capacity;
 		try {
@@ -26,7 +27,7 @@ public class ThreadPool extends Thread{
 		}
 	}
 	
-	public ThreadPool(Queue<String> requestsQueueReference){
+	public ThreadPool(Queue<HTTPRequestHolder> requestsQueueReference){
 		this.requestsQueueReference = requestsQueueReference;
 		try {
 			init();
@@ -66,12 +67,13 @@ public class ThreadPool extends Thread{
 		}
 	}
 	
-	public void requestProcessing(String recievedRequest){
+	public void requestProcessing(HTTPRequestHolder recievedRequest){
+		String recievedRequestMessage = recievedRequest.getHttpRequestMessage();
 		//First figure out if there is more requests in single string, split it
 		String singleRequest = "";
 		String tmpStr = "";
-		for (int i = 0; i < recievedRequest.length(); i++) {
-			tmpStr+=recievedRequest.charAt(i);
+		for (int i = 0; i < recievedRequestMessage.length(); i++) {
+			tmpStr+=recievedRequestMessage.charAt(i);
 			if(tmpStr.charAt(tmpStr.length()-1)=='\n' && tmpStr.charAt(tmpStr.length()-2)=='\r') {
 				//Check wether it contains HTTP sign, if not add it to the request
 				if(tmpStr.contains("HTTP/1") && singleRequest.length()>3){

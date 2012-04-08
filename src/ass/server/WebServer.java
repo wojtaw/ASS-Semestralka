@@ -19,7 +19,7 @@ public class WebServer {
 	private Thread serviceThread;   
 	private ThreadPool threadPool;
 	private Socket connectionSocket;
-	private Queue<String> requestQueue = new LinkedList<String>();	
+	private Queue<HTTPRequestHolder> requestQueue = new LinkedList<HTTPRequestHolder>();	
     
 	public WebServer(int portNumber) {
 		ApplicationOutput.printLog("Server instance created");
@@ -47,9 +47,9 @@ public class WebServer {
 		serviceThread.start();		
 	}	
 	
-	private void processIncomingRequest(String requestData){
+	private void processIncomingRequest(String requestData, Socket connectionSocket){
 		ApplicationOutput.printLog("Adding data to queue");
-		requestQueue.add(requestData);
+		requestQueue.add(new HTTPRequestHolder(requestData,connectionSocket));
 	}
 	
 	class ServerListener implements Runnable {
@@ -73,7 +73,7 @@ public class WebServer {
 	            	tmpStr = inFromClient.readLine();
 	            }	            
 	            
-	            processIncomingRequest(clientSentence);
+	            processIncomingRequest(clientSentence,connectionSocket);
 	            
 	            ApplicationOutput.printLog("Something recieved");
 	         }	    	
