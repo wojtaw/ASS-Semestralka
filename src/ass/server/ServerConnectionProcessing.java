@@ -34,7 +34,7 @@ public class ServerConnectionProcessing extends Thread{
 	
 	public ServerConnectionProcessing(ThreadPool homePool){
 		this.homePool = homePool;
-		ApplicationOutput.printLog("Hello everybody, here's server connection");
+		//ApplicationOutput.printLog("Hello everybody, here's server connection");
 	}
 	
 	public void run(){
@@ -43,8 +43,8 @@ public class ServerConnectionProcessing extends Thread{
 			if(inFromClient != null && !inFromClient.equals("")) {
 				recievedMessage(inFromClient);  
 				ApplicationOutput.printLog("Thread should be returned to the pool or terminated");
-				returnThisConnection();
 			}
+			returnThisConnection();
 			synchronized (this) {			
 				try {
 					this.wait();

@@ -103,6 +103,7 @@ public class WebServerTest {
 		WebServer webServer= new WebServer(8080);	
 
 		Thread.sleep(1000);
+		assertEquals(5, webServer.getTestThreadPool().getTestFreeThreads());
 		
 		startClientConnection();
 
@@ -118,6 +119,7 @@ public class WebServerTest {
 	}	
 	
 	@Test
+	@Ignore
 	public void runWebServerAndSendMultipleRequest() throws Exception{
 		WebServer webServer= new WebServer(8080);	
 
