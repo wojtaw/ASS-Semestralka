@@ -1,6 +1,7 @@
 package ass.server.multirequest;
 
 import java.io.BufferedReader;
+import java.net.Socket;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -77,7 +78,7 @@ public class ThreadPool extends Thread{
 			if(tmpStr.charAt(tmpStr.length()-1)=='\n' && tmpStr.charAt(tmpStr.length()-2)=='\r') {
 				//Check wether it contains HTTP sign, if not add it to the request
 				if(tmpStr.contains("HTTP/1") && singleRequest.length()>3){
-					processSingleRequest(singleRequest);
+					processSingleRequest(singleRequest,recievedRequest.getClientConnection());
 					singleRequest = tmpStr;
 				} else {
 					singleRequest += tmpStr;
@@ -86,12 +87,12 @@ public class ThreadPool extends Thread{
 				tmpStr = "";
 			}
 		}
-		if(singleRequest != null || !singleRequest.equals(""))processSingleRequest(singleRequest);
+		if(singleRequest != null || !singleRequest.equals(""))processSingleRequest(singleRequest,recievedRequest.getClientConnection());
 		
 
 	}
 	
-	private synchronized void processSingleRequest(String recievedRequest){
+	private synchronized void processSingleRequest(String recievedRequest, Socket clientSocket){
 		ApplicationOutput.printWarn("Remaining threads in pool: "+readyThreadsQueue.size());
 		ServerConnectionProcessing serverConnectionWorker;
 		if(readyThreadsQueue.size() == 0) serverConnectionWorker = createNewInstance();
@@ -100,7 +101,7 @@ public class ThreadPool extends Thread{
 			serverConnectionWorker = readyThreadsQueue.poll();
 		}
 		
-		serverConnectionWorker.setInFromClient(recievedRequest);
+		serverConnectionWorker.setInFromClient(recievedRequest,clientSocket);
 		synchronized (serverConnectionWorker) {			
 			if(!serverConnectionWorker.isAlive()){
 				ApplicationOutput.printLog("Starting");

@@ -17,7 +17,8 @@ import ass.server.multirequest.ThreadPool;
 import ass.utils.ApplicationOutput;
 
 public class ServerConnectionProcessing extends Thread{
-	private String inFromClient = null;
+	private String clientRequestString = null;
+	private Socket clientSocketToAnswer = null;
 	private String reqMethod;
 	private String reqPath;
 	private String reqHost;	
@@ -28,7 +29,7 @@ public class ServerConnectionProcessing extends Thread{
 	private String reqAcceptLanguage;
 	private String reqAcceptEncoding;
 	private String reqAcceptCharset;	
-	private String serverDirectory = "C:\\vojtaciml\\eclipse_work\\ASS_Week4_server1\\src\\wwwFiles";
+	private String serverDirectory = "C:\\vojtaciml\\META_2_0\\Terka_backup_2\\META\\WEB";
 	private ThreadPool homePool = null;
 	
 	
@@ -41,8 +42,8 @@ public class ServerConnectionProcessing extends Thread{
 		while(true){			
 			ApplicationOutput.printWarn("Up and running on");
 			//ApplicationOutput.printWarn("Up and running on"+inFromClient);
-			if(inFromClient != null && !inFromClient.equals("")) {
-				recievedMessage(inFromClient);  
+			if(clientRequestString != null && !clientRequestString.equals("")) {
+				recievedMessage(clientRequestString);  
 				ApplicationOutput.printLog("Thread should be returned to the pool or terminated");
 			}
 			returnThisConnection();
@@ -60,19 +61,20 @@ public class ServerConnectionProcessing extends Thread{
 	private void returnThisConnection() {
 		if(homePool == null) return;
 		//We have to null all values
-		inFromClient = "";
+		clientRequestString = "";
 		
 		//Then we can return this thread to the pool
 		homePool.closeConnection(this);
 	}
 
 	public String getInFromClient() {
-		return inFromClient;
+		return clientRequestString;
 	}
 
-	public void setInFromClient(String inFromClient) {
+	public void setInFromClient(String clientRequestString, Socket clientSocketToAnswer) {
 		ApplicationOutput.printLog("INFROM CLIENT SET");
-		this.inFromClient = inFromClient;
+		this.clientRequestString = clientRequestString;
+		this.clientSocketToAnswer = clientSocketToAnswer;
 	}
 
 	private boolean parseRequestValues(String recReq) {
@@ -146,8 +148,28 @@ public class ServerConnectionProcessing extends Thread{
 		ApplicationOutput.printLog("Cookie: "+reqCookie);
 	}
 	
-	private void sendAnswer() throws Exception{
-
+	private boolean sendAnswer() throws Exception{
+		
+		if(clientSocketToAnswer == null) return false;
+		File transfer = new File(serverDirectory+""+reqPath);
+		InputStream in = new FileInputStream(transfer);
+		
+		OutputStream output = clientSocketToAnswer.getOutputStream();
+		
+		byte[] buff = new byte[clientSocketToAnswer.getSendBufferSize()];
+		int bytesRead = 0;
+		
+		ApplicationOutput.printLog(transfer.length()+ " bytes");
+		
+		while((bytesRead = in.read(buff))>0)
+		{
+			output.write(buff,0,bytesRead);
+		}
+		
+		clientSocketToAnswer.close();
+		output.close();
+		
+		return true;
 	}
 
 	public String getReqMethod() {

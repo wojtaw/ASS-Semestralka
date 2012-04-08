@@ -7,8 +7,8 @@ import ass.server.ServerConnectionProcessing;
 
 public class ServerConnectionTest {
 	
-	private String sampleReq = "GET /testImage.jpg HTTP/1.1\r\nHost: localhost\r\n \r\n";
-	private String advancedReq = "GET /hovno.html HTTP/1.1\r\n" +
+	private String sampleReq = "GET /about-us.jpg HTTP/1.1\r\nHost: localhost\r\n \r\n";
+	private String advancedReq = "GET /about-us.jpg HTTP/1.1\r\n" +
 			"Host: localhost:8080\r\n" +
 			"Connection: keep-alive\r\n" +
 			"Cache-Control: max-age=0\r\n" +
@@ -21,7 +21,7 @@ public class ServerConnectionTest {
 	@Test
 	public void SingleSimpleRequestTest(){
 		ServerConnectionProcessing myProcessing = new ServerConnectionProcessing(null);
-		myProcessing.setInFromClient(sampleReq);
+		myProcessing.setInFromClient(sampleReq, null);
 		myProcessing.start();
 		
 		try {
@@ -37,7 +37,7 @@ public class ServerConnectionTest {
 	@Test
 	public void SingleAdvancedRequestTest(){
 		ServerConnectionProcessing myProcessing = new ServerConnectionProcessing(null);
-		myProcessing.setInFromClient(advancedReq);
+		myProcessing.setInFromClient(advancedReq, null);
 		myProcessing.start();
 		
 		try {

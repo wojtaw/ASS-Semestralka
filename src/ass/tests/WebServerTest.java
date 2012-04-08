@@ -18,7 +18,7 @@ import ass.utils.ApplicationOutput;
 public class WebServerTest {
 	private Socket clientSocket;
 	
-	private String advancedReq = "GET /hovno.html HTTP/1.1\r\n" +
+	private String advancedReq = "GET /about-us.jpg HTTP/1.1\r\n" +
 	"Host: localhost:8080\r\n" +
 	"Connection: keep-alive\r\n" +
 	"Cache-Control: max-age=0\r\n" +
