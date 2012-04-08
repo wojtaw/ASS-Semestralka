@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import ass.server.multirequest.ThreadPool;
 import ass.utils.ApplicationOutput;
@@ -17,6 +19,7 @@ public class WebServer {
 	private Thread serviceThread;   
 	private ThreadPool threadPool;
 	private Socket connectionSocket;
+	private Queue<String> requestQueue = new LinkedList<String>();	
     
 	public WebServer(int portNumber) {
 		ApplicationOutput.printLog("Server instance created");
@@ -32,8 +35,9 @@ public class WebServer {
 	} 	
 	
 	private void createThreadPool() {
-		threadPool = new ThreadPool(11);
+		threadPool = new ThreadPool(11,requestQueue);
 		threadPool.poolIsOn = true;
+		threadPool.start();
 	}
 
 	public void startServer() {
@@ -44,7 +48,8 @@ public class WebServer {
 	}	
 	
 	private void processIncomingRequest(String requestData){
-		threadPool.requestProcessing(requestData);
+		ApplicationOutput.printLog("Adding data to queue");
+		requestQueue.add(requestData);
 	}
 	
 	class ServerListener implements Runnable {

@@ -11,10 +11,13 @@ import ass.utils.ApplicationOutput;
 
 public class ThreadPool extends Thread{
 	private int fondCapacity = 15;
-	private Queue<ServerConnectionProcessing> requestsQueue;
+	private Queue<ServerConnectionProcessing> readyThreadsQueue;
 	public boolean poolIsOn = false;
+	private Queue<String> requestsQueueReference; 
 	
-	public ThreadPool(int capacity){
+	
+	public ThreadPool(int capacity, Queue<String> requestsQueueReference){
+		this.requestsQueueReference = requestsQueueReference;
 		this.fondCapacity = capacity;
 		try {
 			init();
@@ -23,7 +26,8 @@ public class ThreadPool extends Thread{
 		}
 	}
 	
-	public ThreadPool(){
+	public ThreadPool(Queue<String> requestsQueueReference){
+		this.requestsQueueReference = requestsQueueReference;
 		try {
 			init();
 		} catch (InterruptedException e) {
@@ -36,6 +40,9 @@ public class ThreadPool extends Thread{
 			//ThreadPool is constantly checking how many fre threads there are
 			//If there is many times more free than capacity is, than it will kill them
 
+			if(requestsQueueReference.size() > 0){
+				requestProcessing(requestsQueueReference.poll());
+			}
 			/*
 			if(requestsQueue.size() > fondCapacity){
 				int difference = requestsQueue.size() - fondCapacity;
@@ -53,7 +60,7 @@ public class ThreadPool extends Thread{
 		//We will make 10 initial Threads ready in queue, this can be changed as desired
 		ApplicationOutput.printLog("Fond will create: "+fondCapacity);
 		
-		requestsQueue = new LinkedList<ServerConnectionProcessing>();
+		readyThreadsQueue = new LinkedList<ServerConnectionProcessing>();
 		
 		for (int i = 0; i < fondCapacity; i++) {
 			ServerConnectionProcessing tmpConnection = new ServerConnectionProcessing(this);
@@ -85,12 +92,12 @@ public class ThreadPool extends Thread{
 	}
 	
 	private synchronized void processSingleRequest(String recievedRequest){
-		ApplicationOutput.printWarn("Remaining threads in pool: "+requestsQueue.size());
+		ApplicationOutput.printWarn("Remaining threads in pool: "+readyThreadsQueue.size());
 		ServerConnectionProcessing serverConnectionWorker;
-		if(requestsQueue.size() == 0) serverConnectionWorker = createNewInstance();
+		if(readyThreadsQueue.size() == 0) serverConnectionWorker = createNewInstance();
 		else {
 			ApplicationOutput.printLog("Connection taken from pool, was available");
-			serverConnectionWorker = requestsQueue.poll();
+			serverConnectionWorker = readyThreadsQueue.poll();
 		}
 		
 		serverConnectionWorker.setInFromClient(recievedRequest);
@@ -112,11 +119,11 @@ public class ThreadPool extends Thread{
 	public synchronized void closeConnection(ServerConnectionProcessing returnedCon){		
 		ApplicationOutput.printLog("Returning USED THREAD");
 		//Put it into pool
-		requestsQueue.add(returnedCon);
+		readyThreadsQueue.add(returnedCon);
 	}	
 		
 	public int getTestFreeThreads(){
-		return requestsQueue.size();
+		return readyThreadsQueue.size();
 	}
 
 	public int getCapacity(){
