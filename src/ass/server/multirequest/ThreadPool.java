@@ -1,6 +1,7 @@
 package ass.server.multirequest;
 
 import java.io.BufferedReader;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -52,11 +53,32 @@ public class ThreadPool extends Thread{
 	}
 	
 	public synchronized void requestProcessing(String recievedRequest){
+		//First figure out if there is more requests in single string, split it
+		String singleRequest = "";
+		String tmpStr = "";
+		for (int i = 0; i < recievedRequest.length(); i++) {
+			tmpStr+=recievedRequest.charAt(i);
+			if(tmpStr.charAt(tmpStr.length()-1)=='\n' && tmpStr.charAt(tmpStr.length()-2)=='\r') {
+				//Check wether it contains HTTP sign, if not add it to the request
+				if(tmpStr.contains("HTTP/1") && tmpStr.length()>1){
+					processSingleRequest(singleRequest);
+					singleRequest = tmpStr;
+				} else {
+					singleRequest += tmpStr;
+				}
+				tmpStr = "";
+			}
+		}
+		
+
+	}
+	
+	private void processSingleRequest(String recievedRequest){
 		ServerConnectionProcessing serverConnectionWorker;
 		if(requestsQueue.size() == 0) serverConnectionWorker = createNewInstance();
 		else serverConnectionWorker = requestsQueue.poll();
 		serverConnectionWorker.setInFromClient(recievedRequest);
-		if(!serverConnectionWorker.isAlive()) serverConnectionWorker.start();
+		if(!serverConnectionWorker.isAlive()) serverConnectionWorker.start();		
 	}
 		
 	private ServerConnectionProcessing createNewInstance() {
