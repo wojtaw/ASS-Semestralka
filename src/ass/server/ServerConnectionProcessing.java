@@ -38,11 +38,20 @@ public class ServerConnectionProcessing extends Thread{
 	}
 	
 	public void run(){
-		ApplicationOutput.printWarn("Up and running on ::::"+inFromClient);
-		if(inFromClient != null && !inFromClient.equals("")) {
-			recievedMessage(inFromClient);  
-			ApplicationOutput.printLog("Thread should be returned to the pool or terminated");
-			returnThisConnection();
+		ApplicationOutput.printWarn("Up and running on"+inFromClient);
+		while(true){			
+			synchronized (this) {			
+				try {
+					this.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			if(inFromClient != null && !inFromClient.equals("")) {
+				recievedMessage(inFromClient);  
+				ApplicationOutput.printLog("Thread should be returned to the pool or terminated");
+				returnThisConnection();
+			}
 		}
 	}
 	
@@ -91,7 +100,7 @@ public class ServerConnectionProcessing extends Thread{
 				parameterType = workingStr.substring(0, delimiter);
 				parameterContent = workingStr.substring(delimiter+2, workingStr.length());
 				assignValues(parameterType, parameterContent);
-				ApplicationOutput.printWarn("Asigning "+parameterType+" to "+parameterContent);
+				//ApplicationOutput.printWarn("Asigning "+parameterType+" to "+parameterContent);
 			}
 		}
 

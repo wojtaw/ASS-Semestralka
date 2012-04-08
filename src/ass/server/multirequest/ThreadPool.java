@@ -38,7 +38,7 @@ public class ThreadPool extends Thread{
 		}
 	}
 	
-	private void init() throws InterruptedException{
+	private synchronized void init() throws InterruptedException{
 		//We will make 10 initial Threads ready in queue, this can be changed as desired
 		if(fondCapacity > 5) readyConnections = fondCapacity / 2;
 		else readyConnections = fondCapacity;
@@ -48,6 +48,7 @@ public class ThreadPool extends Thread{
 		
 		for (int i = 0; i < readyConnections; i++) {
 			ServerConnectionProcessing tmpConnection = new ServerConnectionProcessing(this);
+			tmpConnection.start();
 			requestsQueue.add(tmpConnection);
 		}
 	}
@@ -73,12 +74,18 @@ public class ThreadPool extends Thread{
 
 	}
 	
-	private void processSingleRequest(String recievedRequest){
+	private synchronized void processSingleRequest(String recievedRequest){
 		ServerConnectionProcessing serverConnectionWorker;
 		if(requestsQueue.size() == 0) serverConnectionWorker = createNewInstance();
-		else serverConnectionWorker = requestsQueue.poll();
+		else {
+			ApplicationOutput.printLog("Connection taken from pool, was available");
+			serverConnectionWorker = requestsQueue.poll();
+		}
+		
 		serverConnectionWorker.setInFromClient(recievedRequest);
-		if(!serverConnectionWorker.isAlive()) serverConnectionWorker.start();		
+		synchronized (serverConnectionWorker) {			
+			if(!serverConnectionWorker.isAlive()) serverConnectionWorker.notify();	
+		}			
 	}
 		
 	private ServerConnectionProcessing createNewInstance() {

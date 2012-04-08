@@ -98,6 +98,7 @@ public class WebServerTest {
 	}
 	
 	@Test
+	@Ignore
 	public void runWebServerAndSendSingleRequest() throws Exception{
 		WebServer webServer= new WebServer(8080);	
 
@@ -108,23 +109,35 @@ public class WebServerTest {
 		Thread.sleep(300);	
 		
 		sendRequest(advancedReq);
-		Thread.sleep(100);			
-		sendRequest(advancedReq);
-		Thread.sleep(100);
-		sendRequest(advancedReq);
-		Thread.sleep(100);
-		sendRequest(advancedReq);
-		Thread.sleep(100);
-		sendRequest(advancedReq);
-		Thread.sleep(100);		
-
-		
+		Thread.sleep(100);					
 		
 		endClientConnection();
 		webServer.terminateServer();
 		Thread.sleep(200);
 		assertFalse(webServer.serverOn);		
 	}	
+	
+	@Test
+	public void runWebServerAndSendMultipleRequest() throws Exception{
+		WebServer webServer= new WebServer(8080);	
+
+		Thread.sleep(1000);
+		
+		startClientConnection();
+
+		Thread.sleep(300);	
+		
+		for (int i = 0; i < 15; i++) {
+			sendRequest(advancedReq);
+			Thread.sleep(50);	
+		}		
+		
+		endClientConnection();
+		webServer.terminateServer();
+		Thread.sleep(200);
+		assertFalse(webServer.serverOn);		
+	}	
+		
 	
 	
 	//Utilities for test
