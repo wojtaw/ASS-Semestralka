@@ -12,7 +12,7 @@ import ass.utils.ApplicationOutput;
 public class ThreadPool extends Thread{
 	private int fondCapacity = 15;
 	private Queue<ServerConnectionProcessing> requestsQueue;
-	private boolean poolIsOn = false;
+	public boolean poolIsOn = false;
 	
 	public ThreadPool(int capacity){
 		this.fondCapacity = capacity;
@@ -33,6 +33,18 @@ public class ThreadPool extends Thread{
 	
 	public void run(){
 		while(poolIsOn){
+			//ThreadPool is constantly checking how many fre threads there are
+			//If there is many times more free than capacity is, than it will kill them
+
+			/*
+			if(requestsQueue.size() > fondCapacity){
+				int difference = requestsQueue.size() - fondCapacity;
+				ApplicationOutput.printWarn("TIME TO KILL SOME THREADS");
+				for (int i = 0; i < difference; i++) {
+					requestsQueue.poll();
+				}
+			}
+			*/
 			
 		}
 	}

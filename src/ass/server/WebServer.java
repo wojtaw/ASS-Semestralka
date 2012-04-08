@@ -33,6 +33,7 @@ public class WebServer {
 	
 	private void createThreadPool() {
 		threadPool = new ThreadPool(11);
+		threadPool.poolIsOn = true;
 	}
 
 	public void startServer() {

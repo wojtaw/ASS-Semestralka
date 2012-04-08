@@ -144,11 +144,11 @@ public class WebServerTest {
 
 		Thread.sleep(300);	
 		
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 500; i++) {
 			startClientConnection();
 			sendRequest(advancedReq);
 			endClientConnection();			
-			Thread.sleep(200);	
+			Thread.sleep(50);	
 		}		
 		Thread.sleep(200);	
 		assertEquals(webServer.getTestThreadPool().getCapacity(), webServer.getTestThreadPool().getTestFreeThreads());		
