@@ -15,7 +15,6 @@ import java.util.Queue;
 import ass.generalPool.PoolGeneral;
 import ass.server.multirequest.ThreadPool;
 import ass.utils.ApplicationOutput;
-import ass.utils.Lock;
 
 public class ServerConnectionProcessing extends Thread{
 	private String inFromClient = null;
