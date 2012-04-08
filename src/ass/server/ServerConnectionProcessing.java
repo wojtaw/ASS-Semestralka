@@ -34,12 +34,13 @@ public class ServerConnectionProcessing extends Thread{
 	
 	public ServerConnectionProcessing(ThreadPool homePool){
 		this.homePool = homePool;
-		//ApplicationOutput.printLog("Hello everybody, here's server connection");
+		ApplicationOutput.printLog("Hello everybody, here's new server connection");
 	}
 	
 	public void run(){
 		while(true){			
-			ApplicationOutput.printWarn("Up and running on"+inFromClient);
+			ApplicationOutput.printWarn("Up and running on");
+			//ApplicationOutput.printWarn("Up and running on"+inFromClient);
 			if(inFromClient != null && !inFromClient.equals("")) {
 				recievedMessage(inFromClient);  
 				ApplicationOutput.printLog("Thread should be returned to the pool or terminated");

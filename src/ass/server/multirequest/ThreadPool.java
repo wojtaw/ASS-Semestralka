@@ -51,7 +51,6 @@ public class ThreadPool extends Thread{
 	
 	public void requestProcessing(String recievedRequest){
 		//First figure out if there is more requests in single string, split it
-		ApplicationOutput.printWarn("WORMHOLE"+recievedRequest);
 		String singleRequest = "";
 		String tmpStr = "";
 		for (int i = 0; i < recievedRequest.length(); i++) {
@@ -64,15 +63,16 @@ public class ThreadPool extends Thread{
 				} else {
 					singleRequest += tmpStr;
 				}
+
 				tmpStr = "";
 			}
 		}
+		if(singleRequest != null || !singleRequest.equals(""))processSingleRequest(singleRequest);
 		
 
 	}
 	
 	private synchronized void processSingleRequest(String recievedRequest){
-		ApplicationOutput.printWarn("INCOMING WORMHOLE: "+recievedRequest);
 		ApplicationOutput.printWarn("Remaining threads in pool: "+requestsQueue.size());
 		ServerConnectionProcessing serverConnectionWorker;
 		if(requestsQueue.size() == 0) serverConnectionWorker = createNewInstance();

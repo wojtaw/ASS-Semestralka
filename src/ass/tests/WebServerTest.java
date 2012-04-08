@@ -112,6 +112,7 @@ public class WebServerTest {
 	}
 	
 	@Test
+	@Ignore
 	public void runWebServerAndSendSingleRequest() throws Exception{
 		WebServer webServer= new WebServer(8080);	
 
@@ -134,23 +135,23 @@ public class WebServerTest {
 	}	
 	
 	@Test
-	@Ignore
 	public void runWebServerAndSendMultipleRequest() throws Exception{
 		WebServer webServer= new WebServer(8080);	
 
 		Thread.sleep(1000);
-		
+		assertEquals(webServer.getTestThreadPool().getCapacity(), webServer.getTestThreadPool().getTestFreeThreads());		
 
 
 		Thread.sleep(300);	
 		
-		for (int i = 0; i < 20; i++) {
+		for (int i = 0; i < 50; i++) {
 			startClientConnection();
 			sendRequest(advancedReq);
 			endClientConnection();			
 			Thread.sleep(200);	
 		}		
 		Thread.sleep(200);	
+		assertEquals(webServer.getTestThreadPool().getCapacity(), webServer.getTestThreadPool().getTestFreeThreads());		
 		ApplicationOutput.printLog("Remaining free threads: "+webServer.getTestThreadPool().getTestFreeThreads());
 
 		webServer.terminateServer();
