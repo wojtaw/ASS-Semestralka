@@ -13,6 +13,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import ass.server.WebServer;
+import ass.utils.ApplicationOutput;
 
 public class WebServerTest {
 	private Socket clientSocket;
@@ -98,7 +99,6 @@ public class WebServerTest {
 	}
 	
 	@Test
-	@Ignore
 	public void runWebServerAndSendSingleRequest() throws Exception{
 		WebServer webServer= new WebServer(8080);	
 
@@ -123,16 +123,19 @@ public class WebServerTest {
 
 		Thread.sleep(1000);
 		
-		startClientConnection();
+
 
 		Thread.sleep(300);	
 		
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 20; i++) {
+			startClientConnection();
 			sendRequest(advancedReq);
-			Thread.sleep(500);	
+			endClientConnection();			
+			Thread.sleep(200);	
 		}		
-		
-		endClientConnection();
+		Thread.sleep(200);	
+		ApplicationOutput.printLog("Remaining free threads: "+webServer.getTestThreadPool().getTestFreeThreads());
+
 		webServer.terminateServer();
 		Thread.sleep(200);
 		assertFalse(webServer.serverOn);		

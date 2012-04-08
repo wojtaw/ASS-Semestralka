@@ -105,6 +105,9 @@ public class ThreadPool extends Thread{
 		requestsQueue.add(returnedCon);
 	}	
 		
+	public int getTestFreeThreads(){
+		return requestsQueue.size();
+	}
 
 	public int getCapacity(){
 		return fondCapacity;

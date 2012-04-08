@@ -39,18 +39,18 @@ public class ServerConnectionProcessing extends Thread{
 	
 	public void run(){
 		while(true){			
+			ApplicationOutput.printWarn("Up and running on"+inFromClient);
+			if(inFromClient != null && !inFromClient.equals("")) {
+				recievedMessage(inFromClient);  
+				ApplicationOutput.printLog("Thread should be returned to the pool or terminated");
+				returnThisConnection();
+			}
 			synchronized (this) {			
 				try {
 					this.wait();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-			}
-			ApplicationOutput.printWarn("Up and running on"+inFromClient);
-			if(inFromClient != null && !inFromClient.equals("")) {
-				recievedMessage(inFromClient);  
-				ApplicationOutput.printLog("Thread should be returned to the pool or terminated");
-				returnThisConnection();
 			}
 		}
 	}
@@ -70,6 +70,7 @@ public class ServerConnectionProcessing extends Thread{
 	}
 
 	public void setInFromClient(String inFromClient) {
+		ApplicationOutput.printLog("INFROM CLIENT SET");
 		this.inFromClient = inFromClient;
 	}
 

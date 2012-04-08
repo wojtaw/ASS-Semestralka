@@ -15,7 +15,7 @@ public class WebServer {
 	public boolean serverOn = false;
     protected ServerSocket serverSocket = null;	
 	private Thread serviceThread;   
-	private ThreadPool testPool;
+	private ThreadPool threadPool;
 	private Socket connectionSocket;
     
 	public WebServer(int portNumber) {
@@ -32,7 +32,7 @@ public class WebServer {
 	} 	
 	
 	private void createThreadPool() {
-		testPool = new ThreadPool(11);
+		threadPool = new ThreadPool(11);
 	}
 
 	public void startServer() {
@@ -43,7 +43,7 @@ public class WebServer {
 	}	
 	
 	private void processIncomingRequest(String requestData){
-		testPool.requestProcessing(requestData);
+		threadPool.requestProcessing(requestData);
 	}
 	
 	class ServerListener implements Runnable {
@@ -88,4 +88,8 @@ public class WebServer {
 			ApplicationOutput.printErr("Closing server failed");
 		}
 	}	
+	
+	public ThreadPool getTestThreadPool(){
+		return threadPool;
+	}
 }
