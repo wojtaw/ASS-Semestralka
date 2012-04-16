@@ -19,7 +19,7 @@ public class WebServer {
 	private Thread serviceThread;   
 	private ThreadPool threadPool;
 	private Socket connectionSocket;
-	private Queue<HTTPRequestHolder> requestQueue = new LinkedList<HTTPRequestHolder>();	
+	private volatile Queue<HTTPRequestHolder> requestQueue = new LinkedList<HTTPRequestHolder>();	
     
 	public WebServer(int portNumber) {
 		ApplicationOutput.printLog("Server instance created");
