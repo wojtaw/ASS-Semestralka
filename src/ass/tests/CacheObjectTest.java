@@ -35,6 +35,13 @@ public class CacheObjectTest {
 		assertTrue(testCacheObject.getLastAccessTime().before(myTestTimestamp));
 	}
 	
+	
+	@Test
+	public void testFileSize(){
+		CacheObject testCacheObject = new CacheObject(testFile);		
+		assertEquals(testFile.length() ,testCacheObject.getObjectSize());
+	}
+	
 	@Test
 	public void testTimestampIsBeforeCurrent(){
 		CacheObject testCacheObject = new CacheObject(testFile);
@@ -65,7 +72,6 @@ public class CacheObjectTest {
 		
 		testCacheObject.getCachedFile();
 		assertTrue(myTestTimestamp.before(testCacheObject.getLastAccessTime()));
-		
 	}
 
 }

@@ -25,5 +25,9 @@ public class CacheObject {
 	public Timestamp getLastAccessTime(){
 		return lastAccessTimestamp;	
 	}
+	
+	public long getObjectSize(){
+		return cachedFile.length();
+	}
 
 }
