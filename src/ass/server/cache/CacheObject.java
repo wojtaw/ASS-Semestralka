@@ -8,14 +8,17 @@ public class CacheObject {
 	
 	private File cachedFile;
 	private Timestamp lastAccessTimestamp;
+	private Date date;
 	
 	public CacheObject(File cachedFile){
 		this.cachedFile = cachedFile;
-		Date date= new java.util.Date();
+		date = new Date();
 		lastAccessTimestamp = new Timestamp(date.getTime()); 
 	}
 	
 	public File getCachedFile(){
+		date = new Date();
+		lastAccessTimestamp = new Timestamp(date.getTime());
 		return cachedFile;
 	}
 	

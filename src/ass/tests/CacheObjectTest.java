@@ -50,5 +50,22 @@ public class CacheObjectTest {
 		Timestamp myTestTimestamp = new Timestamp(date.getTime()); 		
 		assertTrue(testCacheObject.getLastAccessTime().before(myTestTimestamp));		
 	}
+	
+	@Test
+	public void timestampIsUpdatingWhenAccessed(){
+		CacheObject testCacheObject = new CacheObject(testFile);
+		Timestamp myTestTimestamp = testCacheObject.getLastAccessTime();
+
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		testCacheObject.getCachedFile();
+		assertTrue(myTestTimestamp.before(testCacheObject.getLastAccessTime()));
+		
+	}
 
 }
