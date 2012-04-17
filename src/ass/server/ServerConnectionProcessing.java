@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Queue;
 
 import ass.generalPool.PoolGeneral;
+import ass.server.cache.CacheManager;
 import ass.server.multirequest.ThreadPool;
 import ass.utils.ApplicationOutput;
 
@@ -211,6 +212,7 @@ public class ServerConnectionProcessing extends Thread{
 	public String getReqAcceptCharset() {
 		return reqAcceptCharset;
 	}	
+	
 	
 	
 	
