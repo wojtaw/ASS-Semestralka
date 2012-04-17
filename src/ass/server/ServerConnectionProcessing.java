@@ -30,7 +30,7 @@ public class ServerConnectionProcessing extends Thread{
 	private String reqAcceptLanguage;
 	private String reqAcceptEncoding;
 	private String reqAcceptCharset;	
-	private String serverDirectory = "C:\\vojtaciml\\META_2_0\\Terka_backup_2\\META\\WEB";
+	private String serverDirectory = "testFiles";
 	private ThreadPool homePool = null;
 	
 	
@@ -153,6 +153,8 @@ public class ServerConnectionProcessing extends Thread{
 		
 		if(clientSocketToAnswer == null) return false;
 		File transfer = new File(serverDirectory+""+reqPath);
+		ApplicationOutput.printLog("SENDING OUT FILE "+transfer.getAbsolutePath());
+		
 		InputStream in = new FileInputStream(transfer);
 		
 		OutputStream output = clientSocketToAnswer.getOutputStream();
@@ -160,12 +162,17 @@ public class ServerConnectionProcessing extends Thread{
 		byte[] buff = new byte[clientSocketToAnswer.getSendBufferSize()];
 		int bytesRead = 0;
 		
-		ApplicationOutput.printLog(transfer.length()+ " bytes");
 		
-		while((bytesRead = in.read(buff))>0)
-		{
-			output.write(buff,0,bytesRead);
-		}
+		String httpHeader = "HTTP/1.1 200 OK\r\n";
+		output.write(httpHeader.getBytes());
+		
+		byte fileContent[] = new byte[(int)transfer.length()];
+
+		in.read(fileContent);
+		output.write(fileContent);
+		
+		ApplicationOutput.printLog("SENDING OUT BYTES: "+fileContent.length+ " bytes");
+		Thread.sleep(100);
 		
 		clientSocketToAnswer.close();
 		output.close();

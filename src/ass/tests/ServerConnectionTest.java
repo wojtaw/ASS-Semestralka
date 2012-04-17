@@ -23,7 +23,7 @@ public class ServerConnectionTest {
 		ServerConnectionProcessing myProcessing = new ServerConnectionProcessing(null);
 		myProcessing.setInFromClient(sampleReq, null);
 		myProcessing.start();
-		
+			
 		try {
 			Thread.sleep(500);
 			myProcessing.printOutRecievedValues();

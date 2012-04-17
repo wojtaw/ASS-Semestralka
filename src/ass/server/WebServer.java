@@ -88,7 +88,7 @@ public class WebServer {
 	public void terminateServer() {
 		try {
 			serverOn = false;
-			if(connectionSocket != null) connectionSocket.close();
+			//if(connectionSocket != null) connectionSocket.close();
 			if(serverSocket != null) serverSocket.close();
 		} catch (IOException e) {
 			ApplicationOutput.printErr("Closing server failed");
