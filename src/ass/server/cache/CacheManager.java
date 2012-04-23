@@ -34,7 +34,7 @@ public class CacheManager {
 		while(gainedSpace < neededSize){
 			
 		}
-		return true
+		return true;
 	}
 	
 	
