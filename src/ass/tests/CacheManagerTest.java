@@ -48,9 +48,9 @@ public class CacheManagerTest {
 	@Test
 	public void testIsFreeSpaceFunctionality() throws Exception{
 		CacheManager myManager = new CacheManager();
-		Method myMethod = CacheManager.class.getDeclaredMethod("isFreeSpaceFor");
+		Method myMethod = CacheManager.class.getDeclaredMethod("isFreeSpaceFor", new Class[]{long.class});
 		myMethod.setAccessible(true);
-		myMethod.invoke(myManager);	
+		myMethod.invoke(myManager, 10000);	
 		myMethod.setAccessible(false);
 	}
 	 

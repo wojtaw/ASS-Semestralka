@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
+import ass.utils.ApplicationOutput;
+
 public class CacheManager {
 	private long cacheCapacity = 10*1000000; //Capacity in MBytes
 	//private ArrayList<CacheObject> cacheObjects = new ArrayList<CacheObject>();
@@ -47,12 +49,10 @@ public class CacheManager {
 		
 	}
 	
-	private void testMethod(){
-		System.out.println("Spustil jsem privatni funkci");
-	}
 
 	private boolean isFreeSpaceFor(long objectSize) {
-		//System.out.println()
+		ApplicationOutput.printLog("Asking for space "+objectSize);
+		/*
 		Set cacheSet = cacheObjects.entrySet();
 		Iterator i = cacheSet.iterator();
 
@@ -60,7 +60,7 @@ public class CacheManager {
 	    while(i.hasNext()){
 	    	System.out.println(i.next());
 	    }	
-	    
+	    */
 		return false;
 	}
 
