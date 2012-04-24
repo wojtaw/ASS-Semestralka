@@ -21,7 +21,7 @@ public class CacheManagerTest {
 	public CacheManagerTest(){
 
 	}
-	@Test
+	@Test		
 	public void buildCacheWithDefaultCapacity(){
 		CacheManager myManager = new CacheManager();
 		assertEquals(10*1000000, myManager.getCapacity());	
@@ -29,7 +29,7 @@ public class CacheManagerTest {
 		myManager.stopCacheManager();
 	}
 	
-	@Test
+	@Test		
 	public void buildCacheWithCustomCapacity(){
 		CacheManager myManager = new CacheManager(5*1000000);
 		assertEquals(5*1000000, myManager.getCapacity());	
@@ -37,7 +37,7 @@ public class CacheManagerTest {
 		myManager.stopCacheManager();
 	}
 	
-	@Test
+	@Test		
 	public void cacheOneFileAndTestPresence(){
 		CacheManager myManager = new CacheManager();
 		assertTrue(myManager.cacheNewFile(testPath1));
@@ -46,7 +46,7 @@ public class CacheManagerTest {
 		myManager.stopCacheManager();
 	}
 	
-	@Test
+	@Test		
 	public void cacheFileAndAttemptToAddDuplicate(){
 		CacheManager myManager = new CacheManager();
 		assertTrue(myManager.cacheNewFile(testPath1));
@@ -56,7 +56,7 @@ public class CacheManagerTest {
 		myManager.stopCacheManager();
 	}
 	
-	@Test
+	@Test		
 	public void testIsFreeSpaceFunctionality() throws Exception{
 		CacheManager myManager = new CacheManager(1500000);
 		//Test file1 is large 665658, test file 2 758905

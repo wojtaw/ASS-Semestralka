@@ -67,27 +67,35 @@ public class CacheManager {
 	
 	
 	
-	private void cleanSpace(long objectSize) {
+	private boolean cleanSpace(long objectSize) {
+		//Check if cache contains something
+		if(cacheObjects.isEmpty()){
+			ApplicationOutput.printLog("Cache is empty, no more space to clean");
+			return false;
+		}
 		//Keep removing least accessed files until there will be enough free space
-		while(objectSize > (cacheCapacity - cachedSpace)){
-			Date date = new Date();		
-			//Let's set timestamp for some point in future, just for sure that all files are older
-			Timestamp leastAccessed = new Timestamp(date.getTime()+210000);
-			String leastAccessedKey ="";
+		while(objectSize > (cacheCapacity - cachedSpace)){		
+			Entry<String, CacheObject> leastAccessedEntry = null;
 			for (Entry<String, CacheObject> entry : cacheObjects.entrySet())
 			{
-				if(leastAccessed.after(entry.getValue().getLastAccessTime()))
-					leastAccessedKey = entry.getKey();
+				if(leastAccessedEntry == null) leastAccessedEntry = entry; 
+				else if(leastAccessedEntry.getValue().getLastAccessTime().after(entry.getValue().getLastAccessTime()))
+					leastAccessedEntry = entry;
 			}
-			removeFromCache(leastAccessedKey);
+			cacheObjects.remove(leastAccessedEntry.getKey());
+			removeFromCache(leastAccessedEntry.getValue());
 		}
+		
+		return true;
 		
 	}
 	
-	public void removeFromCache(String path) {
-		CacheObject removedObject = cacheObjects.remove(path);
+	public boolean removeFromCache(CacheObject removedObject) {
+		ApplicationOutput.printLog("Called remove object from cache");
+		if(removedObject==null) return false;
 		cachedSpace -= removedObject.getObjectSize();
 		ApplicationOutput.printLog("Object "+removedObject.getCachedFile().getAbsolutePath()+" was removed");
+		return true;
 	}
 	
 
@@ -122,18 +130,20 @@ public class CacheManager {
 		}
 
 		private void searchForOutdatedFiles() {
-			System.out.println("Searching for outdated files");
 			Date date = new Date();		
 			//Let's set timestamp for some point in future, just for sure that all files are older
 			Timestamp maximumAgeTime = new Timestamp(date.getTime() - maximumCacheObjectAge);			
 
-			for (Entry<String, CacheObject> entry : cacheObjects.entrySet())
-			{
-				if(maximumAgeTime.after(entry.getValue().getLastAccessTime())){
-					removeFromCache(entry.getKey());
-					break;
-				}
-			}
+			Iterator<Entry<String, CacheObject>> cacheIterator = cacheObjects.entrySet().iterator();
+			
+			Entry<String,CacheObject> entry; 
+		    while (cacheIterator.hasNext()) {		    	
+		    	entry = cacheIterator.next();
+		    	if(maximumAgeTime.after(entry.getValue().getLastAccessTime())){
+		    		cacheIterator.remove();
+		    		removeFromCache(entry.getValue());
+		    	}
+		    }			
 			
 			
 		}
