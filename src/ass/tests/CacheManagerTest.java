@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import ass.server.cache.CacheManager;
@@ -24,12 +25,16 @@ public class CacheManagerTest {
 	public void buildCacheWithDefaultCapacity(){
 		CacheManager myManager = new CacheManager();
 		assertEquals(10*1000000, myManager.getCapacity());	
+		
+		myManager.stopCacheManager();
 	}
 	
 	@Test
 	public void buildCacheWithCustomCapacity(){
 		CacheManager myManager = new CacheManager(5*1000000);
-		assertEquals(5*1000000, myManager.getCapacity());			
+		assertEquals(5*1000000, myManager.getCapacity());	
+		
+		myManager.stopCacheManager();
 	}
 	
 	@Test
@@ -37,6 +42,8 @@ public class CacheManagerTest {
 		CacheManager myManager = new CacheManager();
 		assertTrue(myManager.cacheNewFile(testPath1));
 		assertTrue(myManager.isFileCached(testPath1));
+		
+		myManager.stopCacheManager();
 	}
 	
 	@Test
@@ -45,6 +52,8 @@ public class CacheManagerTest {
 		assertTrue(myManager.cacheNewFile(testPath1));
 		assertTrue(myManager.isFileCached(testPath1));		
 		assertFalse(myManager.cacheNewFile(testPath1));
+		
+		myManager.stopCacheManager();
 	}
 	
 	@Test
@@ -65,6 +74,8 @@ public class CacheManagerTest {
 		assertFalse(returnedValue);		
 		
 		myMethod.setAccessible(false);
+		
+		myManager.stopCacheManager();
 	}
 	
 	@Test
@@ -82,6 +93,31 @@ public class CacheManagerTest {
 		
 		assertFalse(myManager.isFileCached(testPath1));
 		assertFalse(myManager.isFileCached(testPath2));
-		assertTrue(myManager.isFileCached(testPath3));		
+		assertTrue(myManager.isFileCached(testPath3));
+		
+		myManager.stopCacheManager();
 	}
+	
+	
+	
+	@Test
+	public void testCacheCleaner(){
+		CacheManager myManager = new CacheManager(1500000,3000);
+		myManager.cacheNewFile(testPath1);
+		myManager.cacheNewFile(testPath2);	
+		assertTrue(myManager.isFileCached(testPath1));
+		assertTrue(myManager.isFileCached(testPath2));
+		//And after 4 seconds, files should be deleted from cache
+		try {
+			Thread.sleep(4000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		assertFalse(myManager.isFileCached(testPath1));
+		assertFalse(myManager.isFileCached(testPath2));		
+		
+		myManager.stopCacheManager();
+	}
+	
 }

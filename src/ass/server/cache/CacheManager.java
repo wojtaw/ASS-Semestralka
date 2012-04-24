@@ -13,16 +13,32 @@ import ass.utils.ApplicationOutput;
 
 public class CacheManager {
 	private long cacheCapacity = 10*1000000; //Capacity in MBytes
-	//private ArrayList<CacheObject> cacheObjects = new ArrayList<CacheObject>();
-	private HashMap<String, CacheObject> cacheObjects = new HashMap();
+	protected HashMap<String, CacheObject> cacheObjects = new HashMap();
 	private long cachedSpace = 0;
+	protected int maximumCacheObjectAge = 3000; //In miliseconds
+	protected boolean isRunning = false;
+	
 	
 	public CacheManager(){
-		
+		startCleaner();
 	}
 	
+
 	public CacheManager(long cacheCapacity){
 		this.cacheCapacity = cacheCapacity;
+		startCleaner();
+	}	
+	
+	public CacheManager(long cacheCapacity, int maximumCacheObjectAge){
+		this.cacheCapacity = cacheCapacity;
+		this.maximumCacheObjectAge = maximumCacheObjectAge;
+		startCleaner();
+	}
+	
+	private void startCleaner() {
+		isRunning = true;
+		CacheCleaner cacheCleaner = new CacheCleaner();
+		cacheCleaner.start();
 	}
 	
 	public boolean isFileCached(String path){
@@ -68,7 +84,7 @@ public class CacheManager {
 		
 	}
 	
-	private void removeFromCache(String path) {
+	public void removeFromCache(String path) {
 		CacheObject removedObject = cacheObjects.remove(path);
 		cachedSpace -= removedObject.getObjectSize();
 		ApplicationOutput.printLog("Object "+removedObject.getCachedFile().getAbsolutePath()+" was removed");
@@ -81,17 +97,47 @@ public class CacheManager {
 		if((cacheCapacity - cachedSpace) >= objectSize) return true;
 		else return false;
 	}
-
-	private boolean removeFiles(long neededSize){
-		int gainedSpace = 0;
-		while(gainedSpace < neededSize){
-			
-		}
-		return true;
-	}
 	
 	public long getCapacity(){
 		return cacheCapacity;
+	}
+	
+	public void stopCacheManager(){
+		isRunning = false;
+	}
+	
+	private class CacheCleaner extends Thread{
+
+		@Override
+		public void run() {
+			while(isRunning){				
+				searchForOutdatedFiles();
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}			
+			}
+		}
+
+		private void searchForOutdatedFiles() {
+			System.out.println("Searching for outdated files");
+			Date date = new Date();		
+			//Let's set timestamp for some point in future, just for sure that all files are older
+			Timestamp maximumAgeTime = new Timestamp(date.getTime() - maximumCacheObjectAge);			
+
+			for (Entry<String, CacheObject> entry : cacheObjects.entrySet())
+			{
+				if(maximumAgeTime.after(entry.getValue().getLastAccessTime())){
+					removeFromCache(entry.getKey());
+					break;
+				}
+			}
+			
+			
+		}
+		
 	}
 	
 	
