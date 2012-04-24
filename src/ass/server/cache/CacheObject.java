@@ -16,6 +16,13 @@ public class CacheObject {
 		lastAccessTimestamp = new Timestamp(date.getTime()); 
 	}
 	
+	public CacheObject(String path){
+		File cachedFile = new File(path);
+		this.cachedFile = cachedFile;
+		date = new Date();
+		lastAccessTimestamp = new Timestamp(date.getTime()); 
+	}	
+	
 	public File getCachedFile(){
 		date = new Date();
 		lastAccessTimestamp = new Timestamp(date.getTime());

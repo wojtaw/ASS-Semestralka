@@ -18,13 +18,13 @@ public class CacheManager {
 		this.cacheCapacity = cacheCapacity;
 	}
 	
-	public boolean isFileCached(File file){
-		return cacheObjects.containsValue(file.getAbsolutePath());
+	public boolean isFileCached(String path){
+		return cacheObjects.containsValue(path);
 	}
 	
-	public boolean cacheNewFile(File file){
-		if(isFileCached(file)) return false;
-		cacheObjects.put(new CacheObject(file), file.getAbsolutePath());
+	public boolean cacheNewFile(String path){
+		if(isFileCached(path)) return false;
+		cacheObjects.put(new CacheObject(path), path);
 		return true;
 	}
 	
@@ -39,6 +39,7 @@ public class CacheManager {
 	public long getCapacity(){
 		return cacheCapacity;
 	}
+	
 	
 	
 

@@ -11,6 +11,7 @@ import ass.server.cache.CacheManager;
 public class CacheManagerTest {
 	
 	private File testFile = new File("testFiles/meta-web-create-channel.jpg");	
+	private String testPath = "testFiles/meta-web-create-channel.jpg";
 	
 	public CacheManagerTest(){
 		CacheManager myManager = new CacheManager();
@@ -29,8 +30,8 @@ public class CacheManagerTest {
 	@Test
 	public void cacheOneFileAndTestPresence(){
 		CacheManager myManager = new CacheManager();
-		myManager.cacheNewFile(testFile);
-		assertTrue(myManager.isFileCached(testFile));
+		assertTrue(myManager.cacheNewFile(testPath));
+		assertTrue(myManager.isFileCached(testPath));
 		
 	}
 	 
