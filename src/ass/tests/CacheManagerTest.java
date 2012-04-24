@@ -15,6 +15,7 @@ public class CacheManagerTest {
 	private File testFile = new File("testFiles/meta-web-create-channel.jpg");	
 	private String testPath1 = "testFiles/meta-web-create-channel.jpg";
 	private String testPath2 = "testFiles/meta-web-channel-menu.jpg";
+	private String testPath3 = "testFiles/meta-web-facelift2a.jpg";
 	
 	public CacheManagerTest(){
 
@@ -65,6 +66,22 @@ public class CacheManagerTest {
 		
 		myMethod.setAccessible(false);
 	}
-	 
-
+	
+	@Test
+	public void testCleanSpaceFuncitonality(){
+		CacheManager myManager = new CacheManager(1500000);
+		//Test file1 is large 665658, 
+		//test file 2 758905
+		//test file 3 1165658
+		myManager.cacheNewFile(testPath1);
+		myManager.cacheNewFile(testPath2);
+		assertTrue(myManager.isFileCached(testPath1));
+		assertTrue(myManager.isFileCached(testPath2));
+		
+		myManager.cacheNewFile(testPath3);
+		
+		assertFalse(myManager.isFileCached(testPath1));
+		assertFalse(myManager.isFileCached(testPath2));
+		assertTrue(myManager.isFileCached(testPath3));		
+	}
 }

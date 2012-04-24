@@ -1,7 +1,9 @@
 package ass.server.cache;
 
 import java.io.File;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -50,8 +52,26 @@ public class CacheManager {
 	
 	
 	private void cleanSpace(long objectSize) {
+		//Keep removing least accessed files until there will be enough free space
+		while(objectSize > (cacheCapacity - cachedSpace)){
+			Date date = new Date();		
+			//Let's set timestamp for some point in future, just for sure that all files are older
+			Timestamp leastAccessed = new Timestamp(date.getTime()+210000);
+			String leastAccessedKey ="";
+			for (Entry<String, CacheObject> entry : cacheObjects.entrySet())
+			{
+				if(leastAccessed.after(entry.getValue().getLastAccessTime()))
+					leastAccessedKey = entry.getKey();
+			}
+			removeFromCache(leastAccessedKey);
+		}
 		
-		
+	}
+	
+	private void removeFromCache(String path) {
+		CacheObject removedObject = cacheObjects.remove(path);
+		cachedSpace -= removedObject.getObjectSize();
+		ApplicationOutput.printLog("Object "+removedObject.getCachedFile().getAbsolutePath()+" was removed");
 	}
 	
 
@@ -60,14 +80,6 @@ public class CacheManager {
 		ApplicationOutput.printLog("Free space: "+(cacheCapacity - cachedSpace));
 		if((cacheCapacity - cachedSpace) >= objectSize) return true;
 		else return false;
-		
-		/*
-		for (Entry<String, CacheObject> entry : cacheObjects.entrySet())
-		{
-		    System.out.println(entry.getKey() + "/" + entry.getValue().getObjectSize());
-		}
-		return false;
-		*/
 	}
 
 	private boolean removeFiles(long neededSize){
