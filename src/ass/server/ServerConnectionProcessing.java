@@ -152,30 +152,41 @@ public class ServerConnectionProcessing extends Thread{
 	private boolean sendAnswer() throws Exception{
 		
 		if(clientSocketToAnswer == null) return false;
-		File transfer = new File(serverDirectory+""+reqPath);
-		ApplicationOutput.printLog("SENDING OUT FILE "+transfer.getAbsolutePath());
-		
-		InputStream in = new FileInputStream(transfer);
+		File fileToTransfer = new File(serverDirectory+""+reqPath);
+		ApplicationOutput.printLog("SENDING OUT FILE "+fileToTransfer.getAbsolutePath());		
 		
 		OutputStream output = clientSocketToAnswer.getOutputStream();
+		ApplicationOutput.printWarn("Answering to client"+clientSocketToAnswer.getLocalAddress().toString());
 		
-		byte[] buff = new byte[clientSocketToAnswer.getSendBufferSize()];
-		int bytesRead = 0;
+		byte answerContent[];
 		
+		if(!fileToTransfer.exists()){
+			String httpHeader = "HTTP/1.1 404 Not found\r\n";
+			output.write(httpHeader.getBytes());
+			
+		} else {
+			InputStream in = new FileInputStream(fileToTransfer);
+			byte[] buff = new byte[clientSocketToAnswer.getSendBufferSize()];
+			int bytesRead = 0;
+			
+			
+			String httpHeader = "HTTP/1.1 200 OK\r\n";
+			output.write(httpHeader.getBytes());
+			
+			answerContent = new byte[(int)fileToTransfer.length()];
+			
+			in.read(answerContent);
+			output.write(answerContent);
+			ApplicationOutput.printLog("SENDING OUT BYTES: "+answerContent.length+ " bytes");
+		}
 		
-		String httpHeader = "HTTP/1.1 200 OK\r\n";
-		output.write(httpHeader.getBytes());
-		
-		byte fileContent[] = new byte[(int)transfer.length()];
-
-		in.read(fileContent);
-		output.write(fileContent);
-		
-		ApplicationOutput.printLog("SENDING OUT BYTES: "+fileContent.length+ " bytes");
 		Thread.sleep(100);
-		
 		clientSocketToAnswer.close();
 		output.close();
+		
+		
+		
+		
 		
 		return true;
 	}

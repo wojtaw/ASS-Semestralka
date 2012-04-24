@@ -64,6 +64,7 @@ public class WebServer {
 	         {
 	        	ApplicationOutput.printLog("Accepting message");
 	            connectionSocket = serverSocket.accept();
+	            ApplicationOutput.printLog("client just connected "+connectionSocket.getLocalAddress().toString());
 	            BufferedReader inFromClient =
 	               new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
 	            
