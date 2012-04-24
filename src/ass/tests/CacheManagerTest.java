@@ -14,17 +14,18 @@ public class CacheManagerTest {
 	private String testPath = "testFiles/meta-web-create-channel.jpg";
 	
 	public CacheManagerTest(){
-		CacheManager myManager = new CacheManager();
-		assertEquals(10*1000000, myManager.getCapacity());
+
 	}
 	@Test
 	public void buildCacheWithDefaultCapacity(){
-		CacheManager myManager = new CacheManager(5*1000000);
-		assertEquals(5*1000000, myManager.getCapacity());		
+		CacheManager myManager = new CacheManager();
+		assertEquals(10*1000000, myManager.getCapacity());	
 	}
 	
+	@Test
 	public void buildCacheWithCustomCapacity(){
-		
+		CacheManager myManager = new CacheManager(5*1000000);
+		assertEquals(5*1000000, myManager.getCapacity());			
 	}
 	
 	@Test
@@ -32,7 +33,14 @@ public class CacheManagerTest {
 		CacheManager myManager = new CacheManager();
 		assertTrue(myManager.cacheNewFile(testPath));
 		assertTrue(myManager.isFileCached(testPath));
-		
+	}
+	
+	@Test
+	public void cacheFileAndAttemptToAddDuplicate(){
+		CacheManager myManager = new CacheManager();
+		assertTrue(myManager.cacheNewFile(testPath));
+		assertTrue(myManager.isFileCached(testPath));		
+		assertFalse(myManager.cacheNewFile(testPath));
 	}
 	 
 
