@@ -3,6 +3,8 @@ package ass.server.cache;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 public class CacheManager {
 	private long cacheCapacity = 10*1000000; //Capacity in MBytes
@@ -30,7 +32,6 @@ public class CacheManager {
 		if(isFileCached(path)) return false;
 		CacheObject tmpCacheObject = new CacheObject(path);
 		if(tmpCacheObject.getObjectSize() > cacheCapacity) return false;
-		
 		if(isFreeSpaceFor(tmpCacheObject.getObjectSize())) cacheObjects.put(path,new CacheObject(path));
 		else {
 			cleanSpace(tmpCacheObject.getObjectSize());
@@ -45,9 +46,21 @@ public class CacheManager {
 		
 		
 	}
+	
+	private void testMethod(){
+		System.out.println("Spustil jsem privatni funkci");
+	}
 
 	private boolean isFreeSpaceFor(long objectSize) {
-		
+		//System.out.println()
+		Set cacheSet = cacheObjects.entrySet();
+		Iterator i = cacheSet.iterator();
+
+		//lowestTime
+	    while(i.hasNext()){
+	    	System.out.println(i.next());
+	    }	
+	    
 		return false;
 	}
 
