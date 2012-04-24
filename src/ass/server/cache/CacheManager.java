@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CacheManager {
-	private int cacheCapacity = 10*1000000; //Capacity in MBytes
+	private long cacheCapacity = 10*1000000; //Capacity in MBytes
 	//private ArrayList<CacheObject> cacheObjects = new ArrayList<CacheObject>();
 	//private HashMap<CacheObject, long> cacheObjects = new HashMap();
 	private HashMap cacheObjects = new HashMap();
@@ -14,18 +14,17 @@ public class CacheManager {
 		
 	}
 	
-	public CacheManager(int cacheCapacity){
+	public CacheManager(long cacheCapacity){
 		this.cacheCapacity = cacheCapacity;
 	}
 	
 	public boolean isFileCached(File file){
-		
-		return false;
+		return cacheObjects.containsValue(file.getAbsolutePath());
 	}
 	
 	public boolean cacheNewFile(File file){
 		if(isFileCached(file)) return false;
-		cacheObjects.put(file, file.length());
+		cacheObjects.put(new CacheObject(file), file.getAbsolutePath());
 		return true;
 	}
 	
@@ -35,6 +34,10 @@ public class CacheManager {
 			
 		}
 		return true;
+	}
+	
+	public long getCapacity(){
+		return cacheCapacity;
 	}
 	
 	
