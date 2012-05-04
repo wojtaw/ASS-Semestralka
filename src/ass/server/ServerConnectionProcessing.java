@@ -163,7 +163,6 @@ public class ServerConnectionProcessing extends Thread{
 		if(!fileToTransfer.exists()){
 			String httpHeader = "HTTP/1.1 404 Not found\r\n";
 			output.write(httpHeader.getBytes());
-			
 		} else {
 			InputStream in = new FileInputStream(fileToTransfer);
 			byte[] buff = new byte[clientSocketToAnswer.getSendBufferSize()];
@@ -179,10 +178,13 @@ public class ServerConnectionProcessing extends Thread{
 			output.write(answerContent);
 			ApplicationOutput.printLog("SENDING OUT BYTES: "+answerContent.length+ " bytes");
 		}
+		ApplicationOutput.printLog("Output send and closing");
+		output.flush();
+		output.close();
 		
 		Thread.sleep(100);
-		clientSocketToAnswer.close();
-		output.close();
+		//clientSocketToAnswer.close();
+
 		
 		
 		

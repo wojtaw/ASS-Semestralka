@@ -72,6 +72,7 @@ public class WebServer {
 	            ApplicationOutput.printLog("now reading from client");
 	            String tmpStr = inFromClient.readLine();
 	            while(tmpStr != null){
+	            	System.out.println("Readed another line");
 	            	clientSentence.append(tmpStr + "\r\n");
 	            	tmpStr = inFromClient.readLine();
 	            }	            
@@ -80,7 +81,7 @@ public class WebServer {
 	            ApplicationOutput.printLog(clientSentence.toString());
 	            ApplicationOutput.printLog("---------------\n\n");
 
-	            //processIncomingRequest(clientSentence.toString(),connectionSocket);
+	            processIncomingRequest(clientSentence.toString(),connectionSocket);
 	            
 	         }	    	
 			} catch (SocketException e) {
