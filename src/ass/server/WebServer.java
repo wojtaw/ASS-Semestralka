@@ -13,7 +13,7 @@ import ass.server.multirequest.ThreadPool;
 import ass.utils.ApplicationOutput;
 
 public class WebServer {
-	public int portNumber = 8080; //Default port for our webserver
+	public int portNumber = 80; //Default port for our webserver
 	public boolean serverOn = false;
     protected ServerSocket serverSocket = null;	
 	private Thread serviceThread;   
@@ -53,7 +53,7 @@ public class WebServer {
 	}
 	
 	class ServerListener implements Runnable {
-        String clientSentence = "";
+        StringBuilder clientSentence;
         
 	    public void run() {
 	    	try {
@@ -62,21 +62,26 @@ public class WebServer {
 				serverOn = true;
 	         while(serverOn)
 	         {
+	        	clientSentence = new StringBuilder();
 	        	ApplicationOutput.printLog("Accepting message");
 	            connectionSocket = serverSocket.accept();
 	            ApplicationOutput.printLog("client just connected "+connectionSocket.getLocalAddress().toString());
 	            BufferedReader inFromClient =
 	               new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
 	            
+	            ApplicationOutput.printLog("now reading from client");
 	            String tmpStr = inFromClient.readLine();
 	            while(tmpStr != null){
-	            	clientSentence += (tmpStr + "\r\n");
+	            	clientSentence.append(tmpStr + "\r\n");
 	            	tmpStr = inFromClient.readLine();
 	            }	            
+
+	            ApplicationOutput.printLog("---------------\n\nSomething recieved, now will be processed");
+	            ApplicationOutput.printLog(clientSentence.toString());
+	            ApplicationOutput.printLog("---------------\n\n");
+
+	            //processIncomingRequest(clientSentence.toString(),connectionSocket);
 	            
-	            processIncomingRequest(clientSentence,connectionSocket);
-	            
-	            ApplicationOutput.printLog("Something recieved");
 	         }	    	
 			} catch (SocketException e) {
 				ApplicationOutput.printWarn("SERVER WAS STILL LISTENING");				
