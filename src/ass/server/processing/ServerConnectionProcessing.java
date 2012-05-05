@@ -180,6 +180,11 @@ public class ServerConnectionProcessing extends Thread{
 		return fileToTransfer;
 	}
 	
+	private boolean checkProtection(File fileToTest){
+		BasicAuthentification authentification = new BasicAuthentification();
+		return authentification.isProtected(fileToTest);
+	}
+	
 	private boolean sendAnswer() throws Exception{
 		ApplicationOutput.printLog("Processing");
 		if(clientSocketToAnswer == null) return false;
@@ -191,7 +196,7 @@ public class ServerConnectionProcessing extends Thread{
 
 		//File do not exists, return NOT FOUND
 		if(fileToTransfer == null){
-			//Return 404 HTTP code
+			//Return 404 Not found
 			String httpHeader = HTTPStatusCodes.NOT_FOUND.toString();
 			outputToClient.writeBytes(httpHeader);
 			//Or you can return custom error 404 page here
@@ -200,6 +205,20 @@ public class ServerConnectionProcessing extends Thread{
 			outputToClient.writeBytes(displayImage);
 			*/
 			outputToClient.flush();
+			outputToClient.close();
+			return false;
+		}
+		
+		if(checkProtection(fileToTransfer)){
+			ApplicationOutput.printLog("Authentification required");			
+			String httpHeader = HTTPStatusCodes.ACCESS_DENIED.toString();
+			outputToClient.writeBytes(httpHeader);
+			outputToClient.flush();
+            BufferedReader inFromClient =
+	               new BufferedReader(new InputStreamReader(clientSocketToAnswer.getInputStream()));
+            outputToClient.close();
+            ApplicationOutput.printLog("Waiting for response");	
+         ApplicationOutput.printLog("Authentification response:"+inFromClient.readLine());			
 			return false;
 		}
 
