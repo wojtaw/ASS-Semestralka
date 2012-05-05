@@ -11,11 +11,18 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import ass.server.auth.BasicAuthentification;
+import ass.server.auth.LoginRecordJSON;
 import ass.server.cache.CacheManager;
 import ass.server.cache.CacheObject;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.*;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import com.google.gson.Gson;
 
 public class BasicAuthentificationTest {
 	
@@ -76,13 +83,35 @@ public class BasicAuthentificationTest {
 	}
 	
 	@Test
+	@Ignore	
+	public void createJSONFile(){
+		LoginRecordJSON obj = new LoginRecordJSON();
+		Gson gson = new Gson();
+	 
+		String json = gson.toJson(obj);
+	 
+		try {
+			//write converted json data to a file named "file.json"
+			FileWriter writer = new FileWriter("c:\\vojtaciml\\file.json");
+			writer.write(json);
+			writer.close();
+	 
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	 
+		System.out.println(json);		
+	}
+	
+	
+	
+	@Test
 	public void testFullAuthorize() throws Exception{
 		BasicAuthentification authentification = new BasicAuthentification();
-		authentification.isProtected("testFiles/unprotectedFolder/protection.jpg");
-		authentification.authorizeCode("basic dXNlcjpwYXNzd29yZA==");
-		Thread.sleep(100);
-		assertEquals("user", authentification.getUsername());
-		assertEquals("password", authentification.getPassword());
+		authentification.isProtected(new File("testFiles/protectedFolder/protection.jpg"));
+		assertTrue(authentification.authorizeCode("basic dXNlcjpwYXNzd29yZA=="));
+		assertFalse(authentification.authorizeCode("basic dW5hdXRob3JpemVkVXNlcjpiYWRQYXNzd29yZA=="));
+		assertTrue(authentification.authorizeCode("basic d29qdGF3Om15UGFzc3dvcmQ="));
 	}	
 	
 }

@@ -11,13 +11,15 @@ import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.codec.binary.Base64;
 
+import com.google.gson.Gson;
+
 import ass.utils.ApplicationOutput;
 
 public class BasicAuthentification {
 	private StringBuilder readedHtaccess = new StringBuilder();
 	private String directoryPath = "";
-	private String username;
-	private String password;
+	private String requestedUsername;
+	private String requestedPassword;
 	
 	public BasicAuthentification(){
 		
@@ -36,13 +38,33 @@ public class BasicAuthentification {
 	public boolean authorizeCode(String accessCode){
 		if(accessCode==null) return false;
 		parseAccessCode(accessCode);
-		parseHtpasswd();
-		return false;
+		return parseAndCompareHtpasswd();
 	}
 	
-	private void parseHtpasswd() {
+	private boolean parseAndCompareHtpasswd() {
+		ApplicationOutput.printWarn("Parsing and comparing");
 		File htapasswd = new File(directoryPath + "/.htpasswd");
-		
+		if(!htapasswd.exists()) return false;
+		Gson gson = new Gson();
+		 
+		try {
+	 
+			BufferedReader br = new BufferedReader(
+				new FileReader(htapasswd));
+	 
+			//convert the json string back to object
+			LoginRecordJSON loginObject = gson.fromJson(br, LoginRecordJSON.class);
+
+			for (int i = 0; i < loginObject.username.length; i++) {
+				if(loginObject.username[i].equals(requestedUsername)){
+					if(loginObject.password[i].equals(requestedPassword)) return true;
+				}
+			}
+			return false;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}		
 		
 	}
 
@@ -74,8 +96,8 @@ public class BasicAuthentification {
 		accessCode = decodeBase64(accessCode);
 		String[] tmpArray = accessCode.split(":");
 		if(tmpArray.length>1){			
-			username = tmpArray[0];
-			password = tmpArray[1];
+			requestedUsername = tmpArray[0];
+			requestedPassword = tmpArray[1];
 		}
 	}
 	
@@ -87,11 +109,11 @@ public class BasicAuthentification {
 	}
 	
 	public String getUsername(){
-		return username;
+		return requestedUsername;
 	}
 	
 	public String getPassword(){
-		return password;
+		return requestedPassword;
 	}	
 
 }
