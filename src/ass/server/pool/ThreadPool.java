@@ -8,6 +8,7 @@ import java.util.Queue;
 
 import ass.generalPool.PoolFactoryInterface;
 import ass.server.HTTPRequestHolder;
+import ass.server.WebServer;
 import ass.server.processing.ServerConnectionProcessing;
 import ass.utils.ApplicationOutput;
 
@@ -16,9 +17,11 @@ public class ThreadPool extends Thread{
 	private Queue<ServerConnectionProcessing> readyThreadsQueue;
 	public boolean poolIsOn = false;
 	private Queue<HTTPRequestHolder> requestsQueueReference; 
+	private WebServer webServer;
 	
 	
-	public ThreadPool(int capacity, Queue<HTTPRequestHolder> requestsQueueReference){
+	public ThreadPool(int capacity, Queue<HTTPRequestHolder> requestsQueueReference, WebServer webServer){
+		this.webServer = webServer;
 		this.requestsQueueReference = requestsQueueReference;
 		this.fondCapacity = capacity;
 		try {
@@ -28,7 +31,8 @@ public class ThreadPool extends Thread{
 		}
 	}
 	
-	public ThreadPool(Queue<HTTPRequestHolder> requestsQueueReference){
+	public ThreadPool(Queue<HTTPRequestHolder> requestsQueueReference, WebServer webServer){
+		this.webServer = webServer;
 		this.requestsQueueReference = requestsQueueReference;
 		try {
 			init();

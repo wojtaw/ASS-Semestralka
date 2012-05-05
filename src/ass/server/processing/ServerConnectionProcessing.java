@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Queue;
 
 import ass.generalPool.PoolGeneral;
+import ass.server.auth.BasicAuthentification;
 import ass.server.cache.CacheManager;
 import ass.server.errors.HTTPStatusCodes;
 import ass.server.pool.ThreadPool;
@@ -35,11 +36,13 @@ public class ServerConnectionProcessing extends Thread{
 	private String reqAcceptEncoding;
 	private String reqAcceptCharset;	
 	private String serverDirectory = "testFiles";
+	private BasicAuthentification authentification;
 	private ThreadPool homePool = null;
 	
 	
 	public ServerConnectionProcessing(ThreadPool homePool){
 		this.homePool = homePool;
+		this.authentification = new BasicAuthentification();
 		ApplicationOutput.printLog("Hello everybody, here's new server connection");
 	}
 	

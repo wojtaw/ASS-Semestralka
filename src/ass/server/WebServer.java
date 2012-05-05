@@ -36,7 +36,7 @@ public class WebServer {
 	} 	
 	
 	private void createThreadPool() {
-		threadPool = new ThreadPool(11,requestQueue);
+		threadPool = new ThreadPool(11,requestQueue,this);
 		threadPool.poolIsOn = true;
 		threadPool.start();
 	}
