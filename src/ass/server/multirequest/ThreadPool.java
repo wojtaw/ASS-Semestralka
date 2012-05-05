@@ -69,6 +69,7 @@ public class ThreadPool extends Thread{
 	}
 	
 	public void requestProcessing(HTTPRequestHolder recievedRequest){
+		ApplicationOutput.printLog("Processing was requested");
 		String recievedRequestMessage = recievedRequest.getHttpRequestMessage();
 		//First figure out if there is more requests in single string, split it
 		String singleRequest = "";

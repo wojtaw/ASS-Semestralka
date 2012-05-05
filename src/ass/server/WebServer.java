@@ -88,22 +88,7 @@ public class WebServer {
 	            ApplicationOutput.printLog(clientSentence.toString());
 	            ApplicationOutput.printLog("---------------\n\n");
 	            
-	            /*
-	             */
-	    		ApplicationOutput.printWarn("Answering to client"+connectionSocket.getLocalAddress().toString());
-				String httpHeader = "HTTP/1.1 404 Not found\r\n";
-				outputToClient.flush();
-				String responseToSend = "<big><bold>CONNECTED, OK</bold></big>\r\n";
-				try {
-					outputToClient.writeBytes(responseToSend);
-				} catch (SocketException e) {
-					ApplicationOutput.printErr("Client disconnected, can not send response");
-				}
-				outputToClient.flush();
-				outputToClient.close();
-				
-
-	            //processIncomingRequest(clientSentence.toString(),connectionSocket);
+	            processIncomingRequest(clientSentence.toString(),connectionSocket);
 	            
 	         }	    	
 			} catch (SocketException e) {

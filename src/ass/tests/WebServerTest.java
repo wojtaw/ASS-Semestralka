@@ -143,11 +143,11 @@ public class WebServerTest {
 		for (int i = 0; i < 50; i++) {
 			startClientConnection();
 			sendRequest(advancedReq);
-			Thread.sleep(100);	
+			Thread.sleep(10);	
 			endClientConnection();			
 			Thread.sleep(10);	
 		}		
-		Thread.sleep(200);	
+		Thread.sleep(500);	
 		assertEquals(webServer.getTestThreadPool().getCapacity(), webServer.getTestThreadPool().getTestFreeThreads());	
 		
 		ApplicationOutput.printLog("Remaining free threads: "+webServer.getTestThreadPool().getTestFreeThreads());
