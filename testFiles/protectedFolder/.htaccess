@@ -1,0 +1,11 @@
+AuthUserFile /.htpasswd
+
+AuthName "ASS Authentification"
+
+AuthType Basic
+
+<Files "protected1.jpg">
+
+  require valid-user
+
+</Files>

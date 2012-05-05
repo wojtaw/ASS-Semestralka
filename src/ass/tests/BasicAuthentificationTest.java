@@ -20,12 +20,6 @@ public class BasicAuthentificationTest {
 	}
 	
 	
-	@Test
-	@Ignore
-	public void testFileProtection(){
-		BasicAuthentification authentification = new BasicAuthentification();
-		
-	}
 	
 	@Test	
 	public void testHtaccessParser() throws Exception{
@@ -40,11 +34,15 @@ public class BasicAuthentificationTest {
 		returnedValue = (Boolean)myMethod.invoke(authentification, "testFiles/unprotectedFolder/");
 		assertFalse(returnedValue);		
 		myMethod.setAccessible(false);
-		
-		//Test parsing
-			
-		
-		
 	}
 
+	@Test
+	public void testFileProtection(){
+		BasicAuthentification authentification = new BasicAuthentification();
+		assertFalse(authentification.isProtected("testFiles/unprotectedFolder/"));
+		assertTrue(authentification.isProtected("testFiles/protectedFolder/"));
+		
+		assertFalse(authentification.isProtected(new File("testFiles/unprotectedFolder/protection.jpg")));
+		assertTrue(authentification.isProtected(new File("testFiles/protectedFolder/protection.jpg")));		
+	}
 }

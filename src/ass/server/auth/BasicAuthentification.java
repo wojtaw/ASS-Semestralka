@@ -18,12 +18,12 @@ public class BasicAuthentification {
 	}
 	
 	public boolean isProtected(File fileToScan){
-		if(readHtaccessFile(fileToScan.getAbsolutePath())) return false;
+		if(!readHtaccessFile(fileToScan.getParent())) return false;
 		else return true;
 	}
 	
-	public boolean isProtected(String fileToScanPath){
-		if(readHtaccessFile(fileToScanPath)) return false;
+	public boolean isProtected(String directoryPath){
+		if(!readHtaccessFile(directoryPath)) return false;
 		else return true;
 	}	
 	
