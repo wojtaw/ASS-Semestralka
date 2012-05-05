@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -123,6 +124,9 @@ public class ServerConnectionProcessing extends Thread{
 				sendAnswer();
 			} catch (SocketException e) {
 				ApplicationOutput.printErr("Client disconnected before recieving response");
+			} catch (IOException e) {
+				ApplicationOutput.printErr("File loading failed");
+				e.printStackTrace();				
 			} catch (Exception e) {
 				ApplicationOutput.printErr("sendAnswer was unsuccessfull");
 				e.printStackTrace();
@@ -177,14 +181,11 @@ public class ServerConnectionProcessing extends Thread{
 		ApplicationOutput.printLog("Processing");
 		if(clientSocketToAnswer == null) return false;
 		ApplicationOutput.printLog("Answering to client"+clientSocketToAnswer.getLocalAddress().toString());	
-		
-		File fileToTransfer = checkFile();
-		ApplicationOutput.printWarn(fileToTransfer.getAbsolutePath());
-		
 		DataOutputStream outputToClient = new DataOutputStream(clientSocketToAnswer.getOutputStream());
 		
-		byte answerContent[];
-		
+		//if(isFileCached()) fileToTransfer = 
+		File fileToTransfer = checkFile();		
+
 		//File do not exists, return NOT FOUND
 		if(fileToTransfer == null){
 			//Return 404 HTTP code
@@ -198,25 +199,25 @@ public class ServerConnectionProcessing extends Thread{
 			outputToClient.flush();
 			return false;
 		}
-		
+
+		outputToClient.write(createByteArrayFromFile(fileToTransfer));
+		outputToClient.flush();			
+		outputToClient.close();
+		return true;
+	}
+	
+	private byte[] createByteArrayFromFile(File fileToRead) throws IOException{
+		byte answerContent[];
 		//Read the file
-		InputStream in = new FileInputStream(fileToTransfer);
+		InputStream in = new FileInputStream(fileToRead);
 		byte[] buff = new byte[clientSocketToAnswer.getSendBufferSize()];
 		int bytesRead = 0;
 		
-		answerContent = new byte[(int)fileToTransfer.length()];
-		
+		//Create byte array
+		answerContent = new byte[(int)fileToRead.length()];
+		ApplicationOutput.printLog("SENDING OUT BYTES: "+answerContent.length+ " bytes");		
 		in.read(answerContent);
-		outputToClient.write(answerContent);
-		outputToClient.flush();			
-		ApplicationOutput.printLog("SENDING OUT BYTES: "+answerContent.length+ " bytes");
-
-		
-		outputToClient.flush();
-		outputToClient.close();
-		ApplicationOutput.printLog("Output send and closing");
-		//clientSocketToAnswer.close();
-		return true;
+		return answerContent;
 	}
 
 	public String getReqMethod() {
