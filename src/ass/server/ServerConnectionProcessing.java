@@ -1,6 +1,7 @@
 package ass.server;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -155,14 +156,16 @@ public class ServerConnectionProcessing extends Thread{
 		File fileToTransfer = new File(serverDirectory+""+reqPath);
 		ApplicationOutput.printLog("SENDING OUT FILE "+fileToTransfer.getAbsolutePath());		
 		
-		OutputStream output = clientSocketToAnswer.getOutputStream();
+		ApplicationOutput.printWarn(""+clientSocketToAnswer.isOutputShutdown());
+		DataOutputStream outputToClient = new DataOutputStream(clientSocketToAnswer.getOutputStream());
 		ApplicationOutput.printWarn("Answering to client"+clientSocketToAnswer.getLocalAddress().toString());
 		
 		byte answerContent[];
 		
 		if(!fileToTransfer.exists()){
 			String httpHeader = "HTTP/1.1 404 Not found\r\n";
-			output.write(httpHeader.getBytes());
+			outputToClient.flush();
+			//outputToClient.writeBytes(httpHeader);
 		} else {
 			InputStream in = new FileInputStream(fileToTransfer);
 			byte[] buff = new byte[clientSocketToAnswer.getSendBufferSize()];
@@ -170,26 +173,20 @@ public class ServerConnectionProcessing extends Thread{
 			
 			
 			String httpHeader = "HTTP/1.1 200 OK\r\n";
-			output.write(httpHeader.getBytes());
+			outputToClient.writeBytes(httpHeader);
 			
 			answerContent = new byte[(int)fileToTransfer.length()];
 			
 			in.read(answerContent);
-			output.write(answerContent);
+			//outputToClient.write(answerContent);
 			ApplicationOutput.printLog("SENDING OUT BYTES: "+answerContent.length+ " bytes");
 		}
 		ApplicationOutput.printLog("Output send and closing");
-		output.flush();
-		output.close();
+		outputToClient.flush();
+		//outputToClient.close();
 		
 		Thread.sleep(100);
 		//clientSocketToAnswer.close();
-
-		
-		
-		
-		
-		
 		return true;
 	}
 

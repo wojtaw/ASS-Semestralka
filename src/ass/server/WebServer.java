@@ -1,6 +1,7 @@
 package ass.server;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
@@ -65,13 +66,15 @@ public class WebServer {
 	        	clientSentence = new StringBuilder();
 	        	ApplicationOutput.printLog("Accepting message");
 	            connectionSocket = serverSocket.accept();
-	            ApplicationOutput.printLog("client just connected "+connectionSocket.getLocalAddress().toString());
+	    		DataOutputStream outputToClient = new DataOutputStream(connectionSocket.getOutputStream());
+	    		//ApplicationOutput.printLog("client just connected "+connectionSocket.getLocalAddress().toString());
+	    		
 	            BufferedReader inFromClient =
 	               new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
 	            
 	            ApplicationOutput.printLog("now reading from client");
 	            String tmpStr = inFromClient.readLine();
-	            while(tmpStr != null){
+	            while(tmpStr.length() > 0){
 	            	System.out.println("Readed another line");
 	            	clientSentence.append(tmpStr + "\r\n");
 	            	tmpStr = inFromClient.readLine();
@@ -80,12 +83,24 @@ public class WebServer {
 	            ApplicationOutput.printLog("---------------\n\nSomething recieved, now will be processed");
 	            ApplicationOutput.printLog(clientSentence.toString());
 	            ApplicationOutput.printLog("---------------\n\n");
+	            
+	            /*
+	             */
+	    		ApplicationOutput.printWarn("Answering to client"+connectionSocket.getLocalAddress().toString());
+				String httpHeader = "HTTP/1.1 404 Not found\r\n";
+				outputToClient.flush();
+				String responseToSend = "<big><bold>CONNECTED, OK</bold></big>\r\n";
+				outputToClient.writeBytes(responseToSend);
+				outputToClient.flush();
+				outputToClient.close();
+				
 
-	            processIncomingRequest(clientSentence.toString(),connectionSocket);
+	            //processIncomingRequest(clientSentence.toString(),connectionSocket);
 	            
 	         }	    	
 			} catch (SocketException e) {
-				ApplicationOutput.printWarn("SERVER WAS STILL LISTENING");				
+				ApplicationOutput.printWarn("SERVER WAS STILL LISTENING");
+				e.printStackTrace();	
 			} catch (IOException e) {
 				e.printStackTrace();				
 			}	    	
