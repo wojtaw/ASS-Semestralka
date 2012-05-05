@@ -20,6 +20,7 @@ public class WebServer {
 	private Thread serviceThread;   
 	private ThreadPool threadPool;
 	private Socket connectionSocket;
+	private long requestAccepted = 0;
 	private volatile Queue<HTTPRequestHolder> requestQueue = new LinkedList<HTTPRequestHolder>();	
     
 	public WebServer(int portNumber) {
@@ -71,6 +72,7 @@ public class WebServer {
 	        	clientSentence = new StringBuilder();
 	        	ApplicationOutput.printLog("Accepting message");
 	            connectionSocket = serverSocket.accept();
+	            requestAccepted++;
 	    		DataOutputStream outputToClient = new DataOutputStream(connectionSocket.getOutputStream());
 	    		//ApplicationOutput.printLog("client just connected "+connectionSocket.getLocalAddress().toString());
 	    		
@@ -120,6 +122,7 @@ public class WebServer {
 	    }
 	}
 
+	
 	public void terminateServer() {
 		try {
 			serverOn = false;
