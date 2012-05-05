@@ -73,6 +73,16 @@ public class BasicAuthentificationTest {
 		Thread.sleep(100);
 		assertEquals("user", authentification.getUsername());
 		assertEquals("password", authentification.getPassword());
-		
 	}
+	
+	@Test
+	public void testFullAuthorize() throws Exception{
+		BasicAuthentification authentification = new BasicAuthentification();
+		authentification.isProtected("testFiles/unprotectedFolder/protection.jpg");
+		authentification.authorizeCode("basic dXNlcjpwYXNzd29yZA==");
+		Thread.sleep(100);
+		assertEquals("user", authentification.getUsername());
+		assertEquals("password", authentification.getPassword());
+	}	
+	
 }

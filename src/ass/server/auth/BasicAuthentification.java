@@ -15,6 +15,7 @@ import ass.utils.ApplicationOutput;
 
 public class BasicAuthentification {
 	private StringBuilder readedHtaccess = new StringBuilder();
+	private String directoryPath = "";
 	private String username;
 	private String password;
 	
@@ -34,12 +35,20 @@ public class BasicAuthentification {
 	
 	public boolean authorizeCode(String accessCode){
 		if(accessCode==null) return false;
-		else parseAccessCode(accessCode);
+		parseAccessCode(accessCode);
+		parseHtpasswd();
 		return false;
 	}
 	
+	private void parseHtpasswd() {
+		File htapasswd = new File(directoryPath + "/.htpasswd");
+		
+		
+	}
+
 	private boolean readHtaccessFile(String dirPath){
-		File htaccess = new File(dirPath + "/.htaccess");
+		this.directoryPath = dirPath;
+		File htaccess = new File(directoryPath + "/.htaccess");
 		ApplicationOutput.printLog("testing "+htaccess.getAbsolutePath());
 		if(!htaccess.exists()) return false;
 
