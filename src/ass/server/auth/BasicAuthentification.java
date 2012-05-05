@@ -62,7 +62,8 @@ public class BasicAuthentification {
 	private void parseAccessCode(String accessCode){
 		//Cut standart HTTP "basic " string
 		accessCode = accessCode.substring(6);
-		String[] tmpArray = decodeBase64(accessCode).split(":");
+		accessCode = decodeBase64(accessCode);
+		String[] tmpArray = accessCode.split(":");
 		if(tmpArray.length>1){			
 			username = tmpArray[0];
 			password = tmpArray[1];
@@ -70,8 +71,18 @@ public class BasicAuthentification {
 	}
 	
 	private String decodeBase64(String base64){
-        byte[] decoded = Base64.decodeBase64(base64);   
-		return new String(decoded);
+        byte[] decoded = Base64.decodeBase64(base64); 
+        String returnedString = new String(decoded);
+        System.out.println(returnedString);
+		return returnedString;
 	}
+	
+	public String getUsername(){
+		return username;
+	}
+	
+	public String getPassword(){
+		return password;
+	}	
 
 }

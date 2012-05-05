@@ -67,15 +67,12 @@ public class BasicAuthentificationTest {
 	}
 	
 	@Test
-	public void testAuthorizeParsing() throws SecurityException, NoSuchFieldException{
-		//BasicAuthentification authentification = new BasicAuthentification();
-		Class  authentification = BasicAuthentification.class;
-		BasicAuthentification authentificationInstance = new BasicAuthentification();
-		authentificationInstance.authorizeCode("dXNlcjpwYXNzd29yZA==");
-		
-		Field privateField1 = authentification.getDeclaredField("username");
-		privateField1.setAccessible(true);	
-		assertEquals("user", privateField1);
+	public void testAuthorizeParsing() throws Exception{
+		BasicAuthentification authentification = new BasicAuthentification();
+		authentification.authorizeCode("basic dXNlcjpwYXNzd29yZA==");
+		Thread.sleep(100);
+		assertEquals("user", authentification.getUsername());
+		assertEquals("password", authentification.getPassword());
 		
 	}
 }
