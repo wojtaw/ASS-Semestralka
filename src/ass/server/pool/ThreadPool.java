@@ -51,7 +51,7 @@ public class ThreadPool extends Thread{
 			} else {				
 				if(readyThreadsQueue.size() > fondCapacity){
 					int difference = readyThreadsQueue.size() - fondCapacity;
-					ApplicationOutput.printWarn("TIME TO KILL SOME THREADS");
+					ApplicationOutput.printWarn("Too many threads waiting("+readyThreadsQueue.size()+") TIME TO KILL SOME THREADS");
 					for (int i = 0; i < difference; i++) {
 						readyThreadsQueue.poll();
 					}
@@ -98,7 +98,7 @@ public class ThreadPool extends Thread{
 	
 	private synchronized void processSingleRequest(String recievedRequest, Socket clientSocket){
 		if(readyThreadsQueue.size() > 6) ApplicationOutput.printLog("Remaining threads in pool: "+readyThreadsQueue.size());
-		else ApplicationOutput.printWarn("Remaining threads in pool: "+readyThreadsQueue.size());
+		//else ApplicationOutput.printWarn("Remaining threads in pool: "+readyThreadsQueue.size());
 		
 		
 		ServerConnectionProcessing serverConnectionWorker;

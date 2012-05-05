@@ -60,6 +60,7 @@ public class WebServer {
 	
 	class ServerListener implements Runnable {
         StringBuilder clientSentence;
+        int benchmarkCountIndex = 0;
         
 	    public void run() {
 	    	try {
@@ -69,7 +70,11 @@ public class WebServer {
 	         while(serverOn)
 	         {
 	        	clientSentence = new StringBuilder();
-	        	ApplicationOutput.printWarn("Already served connections: "+requestAccepted);
+	        	benchmarkCountIndex++;
+	        	if(benchmarkCountIndex >= 100){
+	        		ApplicationOutput.printWarn("Already served connections: "+requestAccepted);
+	        		benchmarkCountIndex = 0;
+	        	}
 	        	ApplicationOutput.printLog("Accepting connections");
 	            connectionSocket = serverSocket.accept();
 	            requestAccepted++;
