@@ -15,6 +15,8 @@ import ass.utils.ApplicationOutput;
 
 public class BasicAuthentification {
 	private StringBuilder readedHtaccess = new StringBuilder();
+	private String username;
+	private String password;
 	
 	public BasicAuthentification(){
 		
@@ -32,7 +34,7 @@ public class BasicAuthentification {
 	
 	public boolean authorizeCode(String accessCode){
 		if(accessCode==null) return false;
-		ApplicationOutput.printLog("ACCESS CODE:"+parseAccessCode(accessCode));
+		else parseAccessCode(accessCode);
 		return false;
 	}
 	
@@ -57,19 +59,19 @@ public class BasicAuthentification {
 		return true;
 	}
 	
-	private String parseAccessCode(String accessCode){
+	private void parseAccessCode(String accessCode){
 		//Cut standart HTTP "basic " string
 		accessCode = accessCode.substring(6);
-		return decodeBase64(accessCode);
+		String[] tmpArray = decodeBase64(accessCode).split(":");
+		if(tmpArray.length>1){			
+			username = tmpArray[0];
+			password = tmpArray[1];
+		}
 	}
 	
 	private String decodeBase64(String base64){
-		ApplicationOutput.printWarn("BASE64:"+base64);
-		String returnedString = "";
         byte[] decoded = Base64.decodeBase64(base64);   
-        returnedString = new String(decoded);
-		return returnedString;
+		return new String(decoded);
 	}
-	
 
 }

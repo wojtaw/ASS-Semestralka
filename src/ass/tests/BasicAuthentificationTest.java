@@ -1,6 +1,7 @@
 package ass.tests;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Timestamp;
@@ -14,6 +15,7 @@ import ass.server.cache.CacheManager;
 import ass.server.cache.CacheObject;
 import static org.junit.Assert.*;
 
+import java.lang.reflect.*;
 
 public class BasicAuthentificationTest {
 	
@@ -60,11 +62,20 @@ public class BasicAuthentificationTest {
 		
 		//Test presence of htaccess files
 		String returnedValue = (String)myMethod.invoke(authentification, "dXNlcjpwYXNzd29yZA==");
-		System.out.println("TEST RESULT:"+returnedValue);
+		assertEquals("user:password", returnedValue);
 		myMethod.setAccessible(false);		
 	}
 	
-	public void testAuthorizeCode(){
+	@Test
+	public void testAuthorizeParsing() throws SecurityException, NoSuchFieldException{
+		//BasicAuthentification authentification = new BasicAuthentification();
+		Class  authentification = BasicAuthentification.class;
+		BasicAuthentification authentificationInstance = new BasicAuthentification();
+		authentificationInstance.authorizeCode("dXNlcjpwYXNzd29yZA==");
+		
+		Field privateField1 = authentification.getDeclaredField("username");
+		privateField1.setAccessible(true);	
+		assertEquals("user", privateField1);
 		
 	}
 }
