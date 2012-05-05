@@ -73,7 +73,6 @@ public class ThreadPool extends Thread{
 	}
 	
 	public void requestProcessing(HTTPRequestHolder recievedRequest){
-		ApplicationOutput.printLog("Processing was requested");
 		String recievedRequestMessage = recievedRequest.getHttpRequestMessage();
 		//First figure out if there is more requests in single string, split it
 		String singleRequest = "";
@@ -98,21 +97,21 @@ public class ThreadPool extends Thread{
 	}
 	
 	private synchronized void processSingleRequest(String recievedRequest, Socket clientSocket){
-		ApplicationOutput.printWarn("Remaining threads in pool: "+readyThreadsQueue.size());
+		if(readyThreadsQueue.size() > 6) ApplicationOutput.printLog("Remaining threads in pool: "+readyThreadsQueue.size());
+		else ApplicationOutput.printWarn("Remaining threads in pool: "+readyThreadsQueue.size());
+		
+		
 		ServerConnectionProcessing serverConnectionWorker;
 		if(readyThreadsQueue.size() == 0) serverConnectionWorker = createNewInstance();
 		else {
-			ApplicationOutput.printLog("Connection taken from pool, was available");
 			serverConnectionWorker = readyThreadsQueue.poll();
 		}
 		
 		serverConnectionWorker.setInFromClient(recievedRequest,clientSocket);
 		synchronized (serverConnectionWorker) {			
 			if(!serverConnectionWorker.isAlive()){
-				ApplicationOutput.printLog("Starting");
 				serverConnectionWorker.start();
 			} else {
-				ApplicationOutput.printLog("Notyfing");
 				serverConnectionWorker.notify();					
 			}
 		}			

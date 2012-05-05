@@ -50,7 +50,6 @@ public class WebServer {
 	}	
 	
 	private void processIncomingRequest(String requestData, Socket connectionSocket){
-		ApplicationOutput.printLog("Adding data to queue");
 		requestQueue.add(new HTTPRequestHolder(requestData,connectionSocket));
 	}
 	
@@ -70,41 +69,26 @@ public class WebServer {
 	         while(serverOn)
 	         {
 	        	clientSentence = new StringBuilder();
-	        	ApplicationOutput.printLog("Accepting message");
+	        	ApplicationOutput.printWarn("Already served connections: "+requestAccepted);
+	        	ApplicationOutput.printLog("Accepting connections");
 	            connectionSocket = serverSocket.accept();
 	            requestAccepted++;
 	    		DataOutputStream outputToClient = new DataOutputStream(connectionSocket.getOutputStream());
-	    		//ApplicationOutput.printLog("client just connected "+connectionSocket.getLocalAddress().toString());
 	    		
 	            BufferedReader inFromClient =
 	               new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
 	            
-	            ApplicationOutput.printLog("now reading from client");
 	            String tmpStr = inFromClient.readLine();
 	            while(tmpStr != null && tmpStr.length() > 0){
 	            	clientSentence.append(tmpStr + "\r\n");
 	            	tmpStr = inFromClient.readLine();
 	            }	            
 
+	            /*
 	            ApplicationOutput.printLog("---------------\n\nSomething recieved, now will be processed");
 	            ApplicationOutput.printLog(clientSentence.toString());
 	            ApplicationOutput.printLog("---------------\n\n");
-	            
-	            /*
-	    		ApplicationOutput.printWarn("Answering to client"+connectionSocket.getLocalAddress().toString());
-				String httpHeader = "HTTP/1.1 404 Not found\r\n";
-				outputToClient.flush();
-				String responseToSend = "<big><bold>CONNECTED, OK</bold></big>\r\n";
-				try {
-					outputToClient.writeBytes(responseToSend);
-				} catch (SocketException e) {
-					ApplicationOutput.printErr("Client disconnected, can not send response");
-				}
-				outputToClient.flush();
-				outputToClient.close();
-	             */
-				
-
+	            */
 	            processIncomingRequest(clientSentence.toString(),connectionSocket);
 	            
 	         }	    	

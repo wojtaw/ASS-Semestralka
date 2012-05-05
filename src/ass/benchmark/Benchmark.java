@@ -10,7 +10,7 @@ public class Benchmark {
 	
 	public static void main(String[] args) {
 		System.out.println("Runing");
-		runBenchmark(1);
+		runBenchmark(10);
 	}
 
 	private static void runBenchmark(int numberOfThreads) {
@@ -30,7 +30,7 @@ public class Benchmark {
 			while(true){
 				sendRequest();
 				try {
-					Thread.sleep(500);
+					Thread.sleep(100);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

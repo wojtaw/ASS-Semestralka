@@ -44,13 +44,11 @@ public class ServerConnectionProcessing extends Thread{
 	public ServerConnectionProcessing(ThreadPool homePool){
 		this.homePool = homePool;
 		this.authentification = new BasicAuthentification();
-		ApplicationOutput.printLog("Hello everybody, here's new server connection");
 	}
 	
 	public void run(){
 		while(true){			
-			ApplicationOutput.printWarn("Up and running on");
-			//ApplicationOutput.printWarn("Up and running on"+inFromClient);
+			ApplicationOutput.printLog("Connection processor up and running");
 			if(clientRequestString != null && !clientRequestString.equals("")) {
 				recievedMessage(clientRequestString);  
 				ApplicationOutput.printLog("Thread should be returned to the pool or terminated");
@@ -81,7 +79,6 @@ public class ServerConnectionProcessing extends Thread{
 	}
 
 	public void setInFromClient(String clientRequestString, Socket clientSocketToAnswer) {
-		ApplicationOutput.printLog("INFROM CLIENT SET");
 		this.clientRequestString = clientRequestString;
 		this.clientSocketToAnswer = clientSocketToAnswer;
 	}
@@ -103,7 +100,6 @@ public class ServerConnectionProcessing extends Thread{
 		
 		//For rest of the parameters, parse type of parameter, if it is wanted
 		//Than assign value
-		ApplicationOutput.printWarn(parameters.length+"");
 		for (int i = 1; i < parameters.length; i++) {		
 			workingStr = parameters[i];
 			delimiter = workingStr.indexOf(':');
@@ -113,7 +109,6 @@ public class ServerConnectionProcessing extends Thread{
 				parameterType = workingStr.substring(0, delimiter);
 				parameterContent = workingStr.substring(delimiter+2, workingStr.length());
 				assignValues(parameterType, parameterContent);
-				//ApplicationOutput.printWarn("Asigning "+parameterType+" to "+parameterContent);
 			}
 		}
 
