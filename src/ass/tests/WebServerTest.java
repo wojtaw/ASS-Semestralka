@@ -17,6 +17,7 @@ import ass.utils.ApplicationOutput;
 
 public class WebServerTest {
 	private Socket clientSocket;
+	BufferedReader inFromServer;
 	
 	private String advancedReq = "GET /about-us.jpg HTTP/1.1\r\n" +
 	"Host: localhost:8080\r\n" +
@@ -27,8 +28,7 @@ public class WebServerTest {
 	"Accept-Encoding: gzip,deflate,sdch\r\n" +
 	"Accept-Language: cs-CZ,cs;q=0.8\r\n" +
 	"Accept-Charset: windows-1250,utf-8;q=0.7,*;q=0.3\r\n";	
-	
-	@Ignore
+
 	@Test
 	public void testServerLaunch(){
 		WebServer webServer= new WebServer();	
@@ -49,7 +49,6 @@ public class WebServerTest {
 		assertFalse(webServer.serverOn);		
 	}		
 	
-	@Ignore
 	@Test
 	public void runWebServerAndTestDefaultPort(){
 		WebServer webServer= new WebServer();	
@@ -61,7 +60,7 @@ public class WebServerTest {
 			e.printStackTrace();
 		}
 		
-		assertEquals(8080, webServer.portNumber);
+		assertEquals(80, webServer.portNumber);
 		
 		webServer.terminateServer();
 		try {
@@ -74,7 +73,6 @@ public class WebServerTest {
 	}	
 	
 
-	@Ignore
 	@Test
 	public void runWebServerAndTestCustomPort(){
 		WebServer webServer= new WebServer(9000);	
@@ -99,7 +97,6 @@ public class WebServerTest {
 	}
 	
 	@Test
-	@Ignore
 	public void testPreparedThreadsNumber() throws Exception{
 		WebServer webServer= new WebServer(8080);	
 
@@ -112,7 +109,6 @@ public class WebServerTest {
 	}
 	
 	@Test
-	@Ignore
 	public void runWebServerAndSendSingleRequest() throws Exception{
 		WebServer webServer= new WebServer(8080);	
 
@@ -120,15 +116,15 @@ public class WebServerTest {
 		assertEquals(webServer.getTestThreadPool().getCapacity(), webServer.getTestThreadPool().getTestFreeThreads());
 		
 		startClientConnection();
-
+		System.out.println("SENDING");
 		Thread.sleep(300);	
 		sendRequest(advancedReq);
 		Thread.sleep(100);		
-
+		System.out.println("ASSERTING");
 		assertEquals(webServer.getTestThreadPool().getCapacity(), webServer.getTestThreadPool().getTestFreeThreads());		
-		
-		endClientConnection();
 		Thread.sleep(200);
+		System.out.println("TERMINATING");
+		endClientConnection();
 		webServer.terminateServer();
 		Thread.sleep(200);
 		assertFalse(webServer.serverOn);		
@@ -147,6 +143,7 @@ public class WebServerTest {
 		for (int i = 0; i < 50; i++) {
 			startClientConnection();
 			sendRequest(advancedReq);
+			Thread.sleep(100);	
 			endClientConnection();			
 			Thread.sleep(10);	
 		}		
@@ -166,6 +163,7 @@ public class WebServerTest {
 	private void startClientConnection(){
 		try {
 			clientSocket = new Socket("localhost", 8080);
+			inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

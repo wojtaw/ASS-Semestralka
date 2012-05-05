@@ -53,6 +53,11 @@ public class WebServer {
 		requestQueue.add(new HTTPRequestHolder(requestData,connectionSocket));
 	}
 	
+	protected void recoverFromError(){
+		//terminateServer();
+		//startServer();
+	}
+	
 	class ServerListener implements Runnable {
         StringBuilder clientSentence;
         
@@ -74,8 +79,7 @@ public class WebServer {
 	            
 	            ApplicationOutput.printLog("now reading from client");
 	            String tmpStr = inFromClient.readLine();
-	            while(tmpStr.length() > 0){
-	            	System.out.println("Readed another line");
+	            while(tmpStr != null && tmpStr.length() > 0){
 	            	clientSentence.append(tmpStr + "\r\n");
 	            	tmpStr = inFromClient.readLine();
 	            }	            
@@ -90,7 +94,11 @@ public class WebServer {
 				String httpHeader = "HTTP/1.1 404 Not found\r\n";
 				outputToClient.flush();
 				String responseToSend = "<big><bold>CONNECTED, OK</bold></big>\r\n";
-				outputToClient.writeBytes(responseToSend);
+				try {
+					outputToClient.writeBytes(responseToSend);
+				} catch (SocketException e) {
+					ApplicationOutput.printErr("Client disconnected, can not send response");
+				}
 				outputToClient.flush();
 				outputToClient.close();
 				
@@ -99,8 +107,13 @@ public class WebServer {
 	            
 	         }	    	
 			} catch (SocketException e) {
-				ApplicationOutput.printWarn("SERVER WAS STILL LISTENING");
-				e.printStackTrace();	
+				if(!serverOn){
+					ApplicationOutput.printLog("SERVER WAS SHUT DOWN");
+				}else{					
+					ApplicationOutput.printWarn("SERVER was still listening or sending and connection was closed");
+					e.printStackTrace();
+					recoverFromError();
+				}
 			} catch (IOException e) {
 				e.printStackTrace();				
 			}	    	
@@ -115,7 +128,7 @@ public class WebServer {
 		} catch (IOException e) {
 			ApplicationOutput.printErr("Closing server failed");
 		}
-		ApplicationOutput.printLog("SERVER CLOSED\n\n\n\n\n\n\n");
+		ApplicationOutput.printLog("SERVER CLOSED\n\n");
 	}	
 	
 	public ThreadPool getTestThreadPool(){
