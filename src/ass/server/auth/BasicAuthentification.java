@@ -7,6 +7,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+
+import org.apache.commons.codec.binary.Base64;
 
 import ass.utils.ApplicationOutput;
 
@@ -25,7 +28,13 @@ public class BasicAuthentification {
 	public boolean isProtected(String directoryPath){
 		if(!readHtaccessFile(directoryPath)) return false;
 		else return true;
-	}	
+	}
+	
+	public boolean authorizeCode(String accessCode){
+		if(accessCode==null) return false;
+		ApplicationOutput.printLog("ACCESS CODE:"+parseAccessCode(accessCode));
+		return false;
+	}
 	
 	private boolean readHtaccessFile(String dirPath){
 		File htaccess = new File(dirPath + "/.htaccess");
@@ -47,5 +56,20 @@ public class BasicAuthentification {
         
 		return true;
 	}
+	
+	private String parseAccessCode(String accessCode){
+		//Cut standart HTTP "basic " string
+		accessCode = accessCode.substring(6);
+		return decodeBase64(accessCode);
+	}
+	
+	private String decodeBase64(String base64){
+		ApplicationOutput.printWarn("BASE64:"+base64);
+		String returnedString = "";
+        byte[] decoded = Base64.decodeBase64(base64);   
+        returnedString = new String(decoded);
+		return returnedString;
+	}
+	
 
 }

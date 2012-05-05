@@ -25,6 +25,7 @@ import ass.utils.ApplicationOutput;
 public class ServerConnectionProcessing extends Thread{
 	private String clientRequestString = null;
 	private Socket clientSocketToAnswer = null;
+	private String reqAuthorization;
 	private String reqMethod;
 	private String reqPath;
 	private String reqHost;	
@@ -117,7 +118,7 @@ public class ServerConnectionProcessing extends Thread{
 		}
 
 		ApplicationOutput.printLog("DOSTAL JSEM SE K HODNOTAM");		
-		printOutRecievedValues();
+		//printOutRecievedValues();
 		return true;
 	}	
 	
@@ -146,6 +147,8 @@ public class ServerConnectionProcessing extends Thread{
 		else if(parameterType.equals("Accept-Charset")) reqAcceptCharset = parameterContent;
 		else if(parameterType.equals("Connection")) reqConnection = parameterContent;
 		else if(parameterType.equals("Cookie")) reqCookie = parameterContent;
+		else if(parameterType.equals("Authorization")) reqAuthorization = parameterContent;
+		
 	}	
 	
 	public void printOutRecievedValues(){
@@ -180,9 +183,15 @@ public class ServerConnectionProcessing extends Thread{
 		return fileToTransfer;
 	}
 	
-	private boolean checkProtection(File fileToTest){
+	private boolean isFileProtected(File fileToTest){
 		BasicAuthentification authentification = new BasicAuthentification();
-		return authentification.isProtected(fileToTest);
+		//Check if file is protected
+		//If so, check if request do not contain authorization
+		if(authentification.isProtected(fileToTest)){
+			return !authentification.authorizeCode(reqAuthorization);
+		}else{
+			return false;
+		}
 	}
 	
 	private boolean sendAnswer() throws Exception{
@@ -209,16 +218,12 @@ public class ServerConnectionProcessing extends Thread{
 			return false;
 		}
 		
-		if(checkProtection(fileToTransfer)){
+		if(isFileProtected(fileToTransfer)){
 			ApplicationOutput.printLog("Authentification required");			
 			String httpHeader = HTTPStatusCodes.ACCESS_DENIED.toString();
 			outputToClient.writeBytes(httpHeader);
 			outputToClient.flush();
-            BufferedReader inFromClient =
-	               new BufferedReader(new InputStreamReader(clientSocketToAnswer.getInputStream()));
             outputToClient.close();
-            ApplicationOutput.printLog("Waiting for response");	
-         ApplicationOutput.printLog("Authentification response:"+inFromClient.readLine());			
 			return false;
 		}
 

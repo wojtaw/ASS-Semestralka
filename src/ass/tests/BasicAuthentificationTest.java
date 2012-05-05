@@ -1,6 +1,7 @@
 package ass.tests;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -12,6 +13,7 @@ import ass.server.auth.BasicAuthentification;
 import ass.server.cache.CacheManager;
 import ass.server.cache.CacheObject;
 import static org.junit.Assert.*;
+
 
 public class BasicAuthentificationTest {
 	
@@ -44,5 +46,25 @@ public class BasicAuthentificationTest {
 		
 		assertFalse(authentification.isProtected(new File("testFiles/unprotectedFolder/protection.jpg")));
 		assertTrue(authentification.isProtected(new File("testFiles/protectedFolder/protection.jpg")));		
+	}
+	
+	//dXNlcjpwYXNzd29yZA==
+	//user:user
+	//password:password
+	@Test
+	public void testBase64Decoder() throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException{
+		BasicAuthentification authentification = new BasicAuthentification();	
+		
+		Method myMethod = BasicAuthentification.class.getDeclaredMethod("decodeBase64", new Class[]{String.class});
+		myMethod.setAccessible(true);
+		
+		//Test presence of htaccess files
+		String returnedValue = (String)myMethod.invoke(authentification, "dXNlcjpwYXNzd29yZA==");
+		System.out.println("TEST RESULT:"+returnedValue);
+		myMethod.setAccessible(false);		
+	}
+	
+	public void testAuthorizeCode(){
+		
 	}
 }
