@@ -1,4 +1,4 @@
-package ass.server.multirequest;
+package ass.server.pool;
 
 import java.io.BufferedReader;
 import java.net.Socket;
@@ -8,7 +8,7 @@ import java.util.Queue;
 
 import ass.generalPool.PoolFactoryInterface;
 import ass.server.HTTPRequestHolder;
-import ass.server.ServerConnectionProcessing;
+import ass.server.processing.ServerConnectionProcessing;
 import ass.utils.ApplicationOutput;
 
 public class ThreadPool extends Thread{

@@ -1,4 +1,4 @@
-package ass.server;
+package ass.server.processing;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -16,7 +16,8 @@ import java.util.Queue;
 
 import ass.generalPool.PoolGeneral;
 import ass.server.cache.CacheManager;
-import ass.server.multirequest.ThreadPool;
+import ass.server.errors.HTTPStatusCodes;
+import ass.server.pool.ThreadPool;
 import ass.utils.ApplicationOutput;
 
 public class ServerConnectionProcessing extends Thread{
@@ -93,7 +94,7 @@ public class ServerConnectionProcessing extends Thread{
 		reqMethod = workingStr.substring(0, delimiter);
 		
 		//After methos there should be path
-		reqPath = workingStr.substring(delimiter+1,workingStr.indexOf("HTTP/"));
+		reqPath = workingStr.substring(delimiter+1,workingStr.indexOf("HTTP/")-1);
 		
 		//For rest of the parameters, parse type of parameter, if it is wanted
 		//Than assign value
@@ -112,7 +113,7 @@ public class ServerConnectionProcessing extends Thread{
 		}
 
 		ApplicationOutput.printLog("DOSTAL JSEM SE K HODNOTAM");		
-		//printOutRecievedValues();
+		printOutRecievedValues();
 		return true;
 	}	
 	
@@ -153,40 +154,67 @@ public class ServerConnectionProcessing extends Thread{
 		ApplicationOutput.printLog("Cookie: "+reqCookie);
 	}
 	
+	private File checkFile(){
+		File fileToTransfer = new File(serverDirectory+""+reqPath);
+		//Check if it is folder and exists, attempt to find directory index
+		if(fileToTransfer.isDirectory()){
+			File tmpIndex = new File(fileToTransfer.getAbsolutePath()+"/index.html");
+			if(!tmpIndex.exists()) tmpIndex = new File(fileToTransfer.getAbsolutePath()+"/index.html");
+			else if(!tmpIndex.exists()) tmpIndex = new File(fileToTransfer.getAbsolutePath()+"/index.htm");
+			else if(!tmpIndex.exists()) tmpIndex = new File(fileToTransfer.getAbsolutePath()+"/default.html");
+			else if(!tmpIndex.exists()) tmpIndex = new File(fileToTransfer.getAbsolutePath()+"/default.htm");
+			else if(!tmpIndex.exists()) return null;
+			else return tmpIndex;
+		//If not folder, attempt to return file or not found
+		}else{
+			if(fileToTransfer.exists()) return fileToTransfer;
+			else return null;
+		}
+		return fileToTransfer;
+	}
+	
 	private boolean sendAnswer() throws Exception{
 		ApplicationOutput.printLog("Processing");
 		if(clientSocketToAnswer == null) return false;
-		ApplicationOutput.printLog("Answering to client"+clientSocketToAnswer.getLocalAddress().toString());
+		ApplicationOutput.printLog("Answering to client"+clientSocketToAnswer.getLocalAddress().toString());	
 		
-		File fileToTransfer = new File(serverDirectory+""+reqPath);
-		ApplicationOutput.printLog("Request for file "+fileToTransfer.getAbsolutePath());		
+		File fileToTransfer = checkFile();
+		ApplicationOutput.printWarn(fileToTransfer.getAbsolutePath());
 		
 		DataOutputStream outputToClient = new DataOutputStream(clientSocketToAnswer.getOutputStream());
 		
 		byte answerContent[];
 		
-		if(!fileToTransfer.exists()){
-			String httpHeader = "HTTP/1.1 404 Not found\r\n";
+		//File do not exists, return NOT FOUND
+		if(fileToTransfer == null){
+			//Return 404 HTTP code
+			String httpHeader = HTTPStatusCodes.NOT_FOUND.toString();
+			outputToClient.writeBytes(httpHeader);
+			//Or you can return custom error 404 page here
+			/*
+			String displayImage = "<big><bold>FILE NOT FOUND, OR BROKEN</bold></big>\r\n";
+			outputToClient.writeBytes(displayImage);
+			*/
 			outputToClient.flush();
-			outputToClient.writeBytes(httpHeader);
-		} else {
-			InputStream in = new FileInputStream(fileToTransfer);
-			byte[] buff = new byte[clientSocketToAnswer.getSendBufferSize()];
-			int bytesRead = 0;
-			
-			
-			String httpHeader = "HTTP/1.1 200 OK\r\n";
-			outputToClient.writeBytes(httpHeader);
-			
-			answerContent = new byte[(int)fileToTransfer.length()];
-			
-			in.read(answerContent);
-			outputToClient.write(answerContent);
-			ApplicationOutput.printLog("SENDING OUT BYTES: "+answerContent.length+ " bytes");
+			return false;
 		}
-		ApplicationOutput.printLog("Output send and closing");
+		
+		//Read the file
+		InputStream in = new FileInputStream(fileToTransfer);
+		byte[] buff = new byte[clientSocketToAnswer.getSendBufferSize()];
+		int bytesRead = 0;
+		
+		answerContent = new byte[(int)fileToTransfer.length()];
+		
+		in.read(answerContent);
+		outputToClient.write(answerContent);
+		outputToClient.flush();			
+		ApplicationOutput.printLog("SENDING OUT BYTES: "+answerContent.length+ " bytes");
+
+		
 		outputToClient.flush();
 		outputToClient.close();
+		ApplicationOutput.printLog("Output send and closing");
 		//clientSocketToAnswer.close();
 		return true;
 	}

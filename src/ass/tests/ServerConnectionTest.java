@@ -3,7 +3,7 @@ package ass.tests;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import ass.server.ServerConnectionProcessing;
+import ass.server.processing.ServerConnectionProcessing;
 
 public class ServerConnectionTest {
 	
