@@ -40,7 +40,7 @@ public class BasicAuthentificationTest {
 		myMethod.setAccessible(true);
 		
 		//Test presence of htaccess files
-		Boolean returnedValue = (Boolean)myMethod.invoke(authentification, "testFiles/");
+		Boolean returnedValue = (Boolean)myMethod.invoke(authentification, "testFiles/protectedFolder");
 		assertTrue(returnedValue);
 		returnedValue = (Boolean)myMethod.invoke(authentification, "testFiles/unprotectedFolder/");
 		assertFalse(returnedValue);		

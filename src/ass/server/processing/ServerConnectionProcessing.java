@@ -188,7 +188,11 @@ public class ServerConnectionProcessing extends Thread{
 		//Check if file is protected
 		//If so, check if request do not contain authorization
 		if(authentification.isProtected(fileToTest)){
-			return !authentification.authorizeCode(reqAuthorization);
+			//Test wether or not was authorization successfull
+			//User was authorized, file is not protected
+			if(authentification.authorizeCode(reqAuthorization)) return false;
+			//User was rejected, file is protected
+			else return true;
 		}else{
 			return false;
 		}
