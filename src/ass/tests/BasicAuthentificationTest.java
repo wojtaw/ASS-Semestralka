@@ -79,7 +79,7 @@ public class BasicAuthentificationTest {
 		authentification.authorizeCode("basic dXNlcjpwYXNzd29yZA==");
 		Thread.sleep(100);
 		assertEquals("user", authentification.getUsername());
-		assertEquals("password", authentification.getPassword());
+		assertEquals("5f4dcc3b5aa765d61d8327deb882cf99", authentification.getPassword());
 	}
 	
 	@Test

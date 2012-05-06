@@ -8,8 +8,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import com.google.gson.Gson;
 
@@ -67,6 +70,28 @@ public class BasicAuthentification {
 		}		
 		
 	}
+	
+	private String hashPassword(String passwordToHash){
+		byte[] bytesOfHash;
+		String returnedString = null;
+		System.out.println(passwordToHash);
+		try {
+			bytesOfHash = passwordToHash.getBytes("UTF-8");
+
+		MessageDigest md = MessageDigest.getInstance("MD5");
+		byte[] thedigest = md.digest(bytesOfHash);
+		returnedString = new String(thedigest, "UTF-8");
+		
+		} catch (UnsupportedEncodingException e) {
+			ApplicationOutput.printErr("Unsupported encoding during password hashing!");
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println(returnedString);
+		return new String(returnedString);
+	}
 
 	private boolean readHtaccessFile(String dirPath){
 		this.directoryPath = dirPath;
@@ -97,7 +122,7 @@ public class BasicAuthentification {
 		String[] tmpArray = accessCode.split(":");
 		if(tmpArray.length>1){			
 			requestedUsername = tmpArray[0];
-			requestedPassword = tmpArray[1];
+			requestedPassword = hashPassword(tmpArray[1]);
 		}
 	}
 	
