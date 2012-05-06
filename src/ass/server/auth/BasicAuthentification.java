@@ -72,25 +72,7 @@ public class BasicAuthentification {
 	}
 	
 	private String hashPassword(String passwordToHash){
-		byte[] bytesOfHash;
-		String returnedString = null;
-		System.out.println(passwordToHash);
-		try {
-			bytesOfHash = passwordToHash.getBytes("UTF-8");
-
-		MessageDigest md = MessageDigest.getInstance("MD5");
-		byte[] thedigest = md.digest(bytesOfHash);
-		returnedString = new String(thedigest, "UTF-8");
-		
-		} catch (UnsupportedEncodingException e) {
-			ApplicationOutput.printErr("Unsupported encoding during password hashing!");
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
-		
-		System.out.println(returnedString);
-		return new String(returnedString);
+		return DigestUtils.md5Hex(passwordToHash);
 	}
 
 	private boolean readHtaccessFile(String dirPath){
