@@ -10,6 +10,7 @@ import java.net.SocketException;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import ass.server.cache.CacheManager;
 import ass.server.pool.ThreadPool;
 import ass.utils.ApplicationOutput;
 
@@ -22,6 +23,7 @@ public class WebServer {
 	private Socket connectionSocket;
 	private long requestAccepted = 0;
 	private volatile Queue<HTTPRequestHolder> requestQueue = new LinkedList<HTTPRequestHolder>();	
+	private CacheManager serverCache;
     
 	public WebServer(int portNumber) {
 		ApplicationOutput.printLog("Server instance created");
@@ -125,5 +127,9 @@ public class WebServer {
 	
 	public ThreadPool getTestThreadPool(){
 		return threadPool;
+	}
+	
+	public CacheManager getServerCache(){
+		return serverCache;
 	}
 }

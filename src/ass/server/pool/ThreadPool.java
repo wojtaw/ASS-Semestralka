@@ -67,7 +67,7 @@ public class ThreadPool extends Thread{
 		readyThreadsQueue = new LinkedList<ServerConnectionProcessing>();
 		
 		for (int i = 0; i < fondCapacity; i++) {
-			ServerConnectionProcessing tmpConnection = new ServerConnectionProcessing(this);
+			ServerConnectionProcessing tmpConnection = new ServerConnectionProcessing(this, webServer.getServerCache());
 			tmpConnection.start();
 		}
 	}
@@ -118,7 +118,7 @@ public class ThreadPool extends Thread{
 	}
 		
 	private ServerConnectionProcessing createNewInstance() {		
-		return new ServerConnectionProcessing(this);
+		return new ServerConnectionProcessing(this, webServer.getServerCache());
 	}	
 	
 	public synchronized void closeConnection(ServerConnectionProcessing returnedCon){		

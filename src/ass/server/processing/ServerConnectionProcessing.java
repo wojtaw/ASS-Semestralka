@@ -39,10 +39,12 @@ public class ServerConnectionProcessing extends Thread{
 	private String serverDirectory = "testFiles";
 	private BasicAuthentification authentification;
 	private ThreadPool homePool = null;
+	private CacheManager cacheReference;
 	
 	
-	public ServerConnectionProcessing(ThreadPool homePool){
+	public ServerConnectionProcessing(ThreadPool homePool, CacheManager cacheReference){
 		this.homePool = homePool;
+		this.cacheReference = cacheReference;
 		this.authentification = new BasicAuthentification();
 	}
 	
@@ -177,6 +179,7 @@ public class ServerConnectionProcessing extends Thread{
 		}
 		return fileToTransfer;
 	}
+
 	
 	private boolean isFileProtected(File fileToTest){
 		BasicAuthentification authentification = new BasicAuthentification();
@@ -199,9 +202,21 @@ public class ServerConnectionProcessing extends Thread{
 		ApplicationOutput.printLog("Answering to client"+clientSocketToAnswer.getLocalAddress().toString());	
 		DataOutputStream outputToClient = new DataOutputStream(clientSocketToAnswer.getOutputStream());
 		
-		//if(isFileCached()) fileToTransfer = 
-		File fileToTransfer = checkFile();		
-
+		File fileToTransfer;
+		//Chceck if file is cached take it or try to put in in cache
+		
+		/*
+		if(cacheReference.isObjectCached(serverDirectory+""+reqPath)){
+			fileToTransfer = cacheReference.getCachedFile(serverDirectory+""+reqPath);
+			ApplicationOutput.printLog("CACHE HIT");
+		} else {
+			fileToTransfer = checkFile();
+			cacheReference.cacheNewObject(serverDirectory+""+reqPath);
+			ApplicationOutput.printLog("CACHE MISS");			
+		}
+		*/
+		fileToTransfer = checkFile();
+		
 		//File do not exists, return NOT FOUND
 		if(fileToTransfer == null){
 			//Return 404 Not found
@@ -285,9 +300,4 @@ public class ServerConnectionProcessing extends Thread{
 	public String getReqAcceptCharset() {
 		return reqAcceptCharset;
 	}	
-	
-	
-	
-	
-	
 }

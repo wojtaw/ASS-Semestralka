@@ -20,7 +20,7 @@ public class ServerConnectionTest {
 	
 	@Test
 	public void SingleSimpleRequestTest(){
-		ServerConnectionProcessing myProcessing = new ServerConnectionProcessing(null);
+		ServerConnectionProcessing myProcessing = new ServerConnectionProcessing(null, null);
 		myProcessing.setInFromClient(sampleReq, null);
 		myProcessing.start();
 			
@@ -36,7 +36,7 @@ public class ServerConnectionTest {
 	
 	@Test
 	public void SingleAdvancedRequestTest(){
-		ServerConnectionProcessing myProcessing = new ServerConnectionProcessing(null);
+		ServerConnectionProcessing myProcessing = new ServerConnectionProcessing(null, null);
 		myProcessing.setInFromClient(advancedReq, null);
 		myProcessing.start();
 		
