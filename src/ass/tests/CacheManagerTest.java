@@ -40,8 +40,8 @@ public class CacheManagerTest {
 	@Test		
 	public void cacheOneFileAndTestPresence(){
 		CacheManager myManager = new CacheManager();
-		assertTrue(myManager.cacheNewFile(testPath1));
-		assertTrue(myManager.isFileCached(testPath1));
+		assertTrue(myManager.cacheNewObject(testPath1));
+		assertTrue(myManager.isObjectCached(testPath1));
 		
 		myManager.stopCacheManager();
 	}
@@ -49,9 +49,9 @@ public class CacheManagerTest {
 	@Test		
 	public void cacheFileAndAttemptToAddDuplicate(){
 		CacheManager myManager = new CacheManager();
-		assertTrue(myManager.cacheNewFile(testPath1));
-		assertTrue(myManager.isFileCached(testPath1));		
-		assertFalse(myManager.cacheNewFile(testPath1));
+		assertTrue(myManager.cacheNewObject(testPath1));
+		assertTrue(myManager.isObjectCached(testPath1));		
+		assertFalse(myManager.cacheNewObject(testPath1));
 		
 		myManager.stopCacheManager();
 	}
@@ -60,8 +60,8 @@ public class CacheManagerTest {
 	public void testIsFreeSpaceFunctionality() throws Exception{
 		CacheManager myManager = new CacheManager(1500000);
 		//Test file1 is large 665658, test file 2 758905
-		myManager.cacheNewFile(testPath1);
-		myManager.cacheNewFile(testPath2);		
+		myManager.cacheNewObject(testPath1);
+		myManager.cacheNewObject(testPath2);		
 		
 		
 		Method myMethod = CacheManager.class.getDeclaredMethod("isFreeSpaceFor", new Class[]{long.class});
@@ -84,16 +84,16 @@ public class CacheManagerTest {
 		//Test file1 is large 665658, 
 		//test file 2 758905
 		//test file 3 1165658
-		myManager.cacheNewFile(testPath1);
-		myManager.cacheNewFile(testPath2);
-		assertTrue(myManager.isFileCached(testPath1));
-		assertTrue(myManager.isFileCached(testPath2));
+		myManager.cacheNewObject(testPath1);
+		myManager.cacheNewObject(testPath2);
+		assertTrue(myManager.isObjectCached(testPath1));
+		assertTrue(myManager.isObjectCached(testPath2));
 		
-		myManager.cacheNewFile(testPath3);
+		myManager.cacheNewObject(testPath3);
 		
-		assertFalse(myManager.isFileCached(testPath1));
-		assertFalse(myManager.isFileCached(testPath2));
-		assertTrue(myManager.isFileCached(testPath3));
+		assertFalse(myManager.isObjectCached(testPath1));
+		assertFalse(myManager.isObjectCached(testPath2));
+		assertTrue(myManager.isObjectCached(testPath3));
 		
 		myManager.stopCacheManager();
 	}
@@ -103,10 +103,10 @@ public class CacheManagerTest {
 	@Test
 	public void testCacheCleaner(){
 		CacheManager myManager = new CacheManager(1500000,3000);
-		myManager.cacheNewFile(testPath1);
-		myManager.cacheNewFile(testPath2);	
-		assertTrue(myManager.isFileCached(testPath1));
-		assertTrue(myManager.isFileCached(testPath2));
+		myManager.cacheNewObject(testPath1);
+		myManager.cacheNewObject(testPath2);	
+		assertTrue(myManager.isObjectCached(testPath1));
+		assertTrue(myManager.isObjectCached(testPath2));
 		//And after 4 seconds, files should be deleted from cache
 		try {
 			Thread.sleep(4000);
@@ -114,8 +114,8 @@ public class CacheManagerTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
-		assertFalse(myManager.isFileCached(testPath1));
-		assertFalse(myManager.isFileCached(testPath2));		
+		assertFalse(myManager.isObjectCached(testPath1));
+		assertFalse(myManager.isObjectCached(testPath2));		
 		
 		myManager.stopCacheManager();
 	}

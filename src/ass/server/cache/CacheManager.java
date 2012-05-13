@@ -11,7 +11,7 @@ import java.util.Set;
 
 import ass.utils.ApplicationOutput;
 
-public class CacheManager {
+public class CacheManager implements CacheInterface<String, CacheObject>{
 	private long cacheCapacity = 10*1000000; //Capacity in MBytes
 	protected HashMap<String, CacheObject> cacheObjects = new HashMap();
 	private long cachedSpace = 0;
@@ -41,17 +41,22 @@ public class CacheManager {
 		cacheCleaner.start();
 	}
 	
-	public boolean isFileCached(String path){
+	public boolean isObjectCached(String path){
 		return cacheObjects.containsKey(path);
 	}
 	
-	public File getCachedFile(String path){
-		if(!isFileCached(path)) return null;
-		return cacheObjects.get(path).getCachedFile();
+	public CacheObject getCachedObject(String path){
+		if(!isObjectCached(path)) return null;
+		return cacheObjects.get(path);
 	}
 	
-	public boolean cacheNewFile(String path){
-		if(isFileCached(path)) return false;
+	public File getCachedFile(String path){
+		if(!isObjectCached(path)) return null;
+		return cacheObjects.get(path).getCachedFile();
+	}	
+	
+	public boolean cacheNewObject(String path){
+		if(isObjectCached(path)) return false;
 		CacheObject tmpCacheObject = new CacheObject(path);
 		if(tmpCacheObject.getObjectSize() > cacheCapacity) return false;
 		if(isFreeSpaceFor(tmpCacheObject.getObjectSize())){
