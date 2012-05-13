@@ -2,6 +2,7 @@ package ass.server.cache;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
@@ -20,6 +21,7 @@ public class CacheObject {
 		this.cachedFile = cachedFile;
 		date = new Date();
 		lastAccessTimestamp = new Timestamp(date.getTime()); 
+		createByteArrayFromFile();		
 	}
 	
 	public CacheObject(String path){
@@ -27,6 +29,7 @@ public class CacheObject {
 		this.cachedFile = cachedFile;
 		date = new Date();
 		lastAccessTimestamp = new Timestamp(date.getTime()); 
+		createByteArrayFromFile();
 	}	
 	
 	public File getCachedFile(){
@@ -43,19 +46,27 @@ public class CacheObject {
 		return cachedFile.length();
 	}
 	
-	/*
-	private createByteArrayFromFile(File fileToRead) throws IOException{
-		byte answerContent[];
-		//Read the file
-		InputStream in = new FileInputStream(fileToRead);
-		byte[] buff = new byte[clientSocketToAnswer.getSendBufferSize()];
-		int bytesRead = 0;
-		
-		//Create byte array
-		fileBytes = new byte[(int)fileToRead.length()];		
-		in.read(fileBytes);
+	public byte[] getBytes(){
 		return fileBytes;
+	}
+	
+	public synchronized void objectAccessed(){
+		date = new Date();
+		lastAccessTimestamp = new Timestamp(date.getTime()); 
+	}
+	
+	//Create byte array from file
+	private void createByteArrayFromFile(){
+		InputStream in;
+		try {
+			in = new FileInputStream(cachedFile);
+			fileBytes = new byte[(int)cachedFile.length()];
+			in.read(fileBytes);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}	
-	*/
 
 }

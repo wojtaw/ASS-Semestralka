@@ -28,15 +28,22 @@ public class WebServer {
 	public WebServer(int portNumber) {
 		ApplicationOutput.printLog("Server instance created");
 		this.portNumber = portNumber;
+		runServerCache();
 		createThreadPool();
 		startServer();
 	} 
 	
+
 	public WebServer() {
 		ApplicationOutput.printLog("Server instance created");
+		runServerCache();		
 		createThreadPool();
 		startServer();
-	} 	
+	}
+	
+	private void runServerCache() {
+		serverCache = new CacheManager();
+	}
 	
 	private void createThreadPool() {
 		threadPool = new ThreadPool(11,requestQueue,this);

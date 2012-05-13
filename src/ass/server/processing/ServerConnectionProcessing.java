@@ -201,21 +201,8 @@ public class ServerConnectionProcessing extends Thread{
 		if(clientSocketToAnswer == null) return false;
 		ApplicationOutput.printLog("Answering to client"+clientSocketToAnswer.getLocalAddress().toString());	
 		DataOutputStream outputToClient = new DataOutputStream(clientSocketToAnswer.getOutputStream());
-		
-		File fileToTransfer;
-		//Chceck if file is cached take it or try to put in in cache
-		
-		/*
-		if(cacheReference.isObjectCached(serverDirectory+""+reqPath)){
-			fileToTransfer = cacheReference.getCachedFile(serverDirectory+""+reqPath);
-			ApplicationOutput.printLog("CACHE HIT");
-		} else {
-			fileToTransfer = checkFile();
-			cacheReference.cacheNewObject(serverDirectory+""+reqPath);
-			ApplicationOutput.printLog("CACHE MISS");			
-		}
-		*/
-		fileToTransfer = checkFile();
+
+		File fileToTransfer = checkFile();
 		
 		//File do not exists, return NOT FOUND
 		if(fileToTransfer == null){
@@ -240,24 +227,31 @@ public class ServerConnectionProcessing extends Thread{
             outputToClient.close();
 			return false;
 		}
+		
+		//Chceck if file is cached take it or try to put in in cache
+		if(cacheReference.isObjectCached(fileToTransfer)){
+			ApplicationOutput.printWarn("CACHE HIT");
+			outputToClient.write(cacheReference.getCachedObject(fileToTransfer).getBytes());
+		} else {
+			ApplicationOutput.printWarn("CACHE MISS");			
+			cacheReference.cacheNewObject(fileToTransfer);
+			outputToClient.write(createByteArrayFromFile(fileToTransfer));
+		}
+		
 
-		outputToClient.write(createByteArrayFromFile(fileToTransfer));
 		outputToClient.flush();			
 		outputToClient.close();
 		return true;
 	}
 	
+	//Create byte array
 	private byte[] createByteArrayFromFile(File fileToRead) throws IOException{
 		byte answerContent[];
-		//Read the file
 		InputStream in = new FileInputStream(fileToRead);
-		byte[] buff = new byte[clientSocketToAnswer.getSendBufferSize()];
-		int bytesRead = 0;
-		
-		//Create byte array
 		answerContent = new byte[(int)fileToRead.length()];
-		ApplicationOutput.printLog("SENDING OUT BYTES: "+answerContent.length+ " bytes");		
 		in.read(answerContent);
+		
+		ApplicationOutput.printLog("SENDING OUT BYTES: "+answerContent.length+ " bytes");		
 		return answerContent;
 	}
 

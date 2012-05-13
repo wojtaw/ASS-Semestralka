@@ -15,7 +15,7 @@ public class CacheManager implements CacheInterface<String, CacheObject>{
 	private long cacheCapacity = 10*1000000; //Capacity in MBytes
 	protected HashMap<String, CacheObject> cacheObjects = new HashMap();
 	private long cachedSpace = 0;
-	protected int maximumCacheObjectAge = 3000; //In miliseconds
+	protected int maximumCacheObjectAge = 30000; //In miliseconds
 	protected boolean isRunning = false;
 	
 	
@@ -50,14 +50,19 @@ public class CacheManager implements CacheInterface<String, CacheObject>{
 	}	
 	
 	public CacheObject getCachedObject(String path){
-		if(!isObjectCached(path)) return null;
-		return cacheObjects.get(path);
+		CacheObject tmpObject;
+		if(!isObjectCached(path)) tmpObject = null;
+		else{
+			tmpObject = cacheObjects.get(path);
+			tmpObject.objectAccessed();
+		}
+		return tmpObject;
 	}
-	
-	public File getCachedFile(String path){
-		if(!isObjectCached(path)) return null;
-		return cacheObjects.get(path).getCachedFile();
+
+	public CacheObject getCachedObject(File file){
+		return getCachedObject(file.getAbsolutePath());
 	}	
+		
 	
 	public boolean cacheNewObject(String path){
 		if(isObjectCached(path)) return false;
@@ -74,12 +79,16 @@ public class CacheManager implements CacheInterface<String, CacheObject>{
 		return true;
 	}
 	
+	public boolean cacheNewObject(File file){
+		return cacheNewObject(file.getAbsolutePath());
+	}	
+	
 	
 	
 	private boolean cleanSpace(long objectSize) {
 		//Check if cache contains something
 		if(cacheObjects.isEmpty()){
-			ApplicationOutput.printLog("Cache is empty, no more space to clean");
+			ApplicationOutput.printWarn("Cache is empty, no more space to clean");
 			return false;
 		}
 		//Keep removing least accessed files until there will be enough free space
@@ -100,17 +109,17 @@ public class CacheManager implements CacheInterface<String, CacheObject>{
 	}
 	
 	public boolean removeFromCache(CacheObject removedObject) {
-		ApplicationOutput.printLog("Called remove object from cache");
+		ApplicationOutput.printWarn("Called remove object from cache");
 		if(removedObject==null) return false;
 		cachedSpace -= removedObject.getObjectSize();
-		ApplicationOutput.printLog("Object "+removedObject.getCachedFile().getAbsolutePath()+" was removed");
+		ApplicationOutput.printWarn("Object "+removedObject.getCachedFile().getAbsolutePath()+" was removed");
 		return true;
 	}
 	
 
 	private boolean isFreeSpaceFor(long objectSize) {
-		ApplicationOutput.printLog("Asking for space "+objectSize);
-		ApplicationOutput.printLog("Free space: "+(cacheCapacity - cachedSpace));
+		ApplicationOutput.printWarn("Asking for space "+objectSize);
+		ApplicationOutput.printWarn("Free space: "+(cacheCapacity - cachedSpace));
 		if((cacheCapacity - cachedSpace) >= objectSize) return true;
 		else return false;
 	}
