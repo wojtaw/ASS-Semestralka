@@ -3,7 +3,7 @@ package ass.utils;
 public class ApplicationOutput {
 	
 	public static void printLog(String msg){
-		//System.out.println("LOG: "+msg);
+		System.out.println("LOG: "+msg);
 	}
 	
 	public static void printWarn(String msg){

@@ -18,7 +18,6 @@ public class Benchmark {
 			RequestGenerator requestGenerator = new RequestGenerator();
 			requestGenerator.start();
 		}
-		
 	}
 	
 	private static class RequestGenerator extends Thread{

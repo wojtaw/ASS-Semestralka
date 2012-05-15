@@ -43,7 +43,7 @@ public class ThreadPool extends Thread{
 	
 	public void run(){
 		while(poolIsOn){
-			//ThreadPool is constantly checking how many fre threads there are
+			//ThreadPool is constantly checking how many free threads there are
 			//If there is many times more free than capacity is, than it will kill them
 
 			if(requestsQueueReference.size() > 0){
@@ -127,6 +127,7 @@ public class ThreadPool extends Thread{
 		readyThreadsQueue.add(returnedCon);
 	}	
 		
+	//To avoid some complicated reflection, we aded Getter for testing purposes
 	public int getTestFreeThreads(){
 		return readyThreadsQueue.size();
 	}
