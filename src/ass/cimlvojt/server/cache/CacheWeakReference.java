@@ -8,12 +8,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 import ass.cimlvojt.utils.ApplicationOutput;
 
 public class CacheWeakReference implements CacheInterface<String, CacheObject>{
 	private long cacheCapacity = 10*1000000; //Capacity in MBytes
-	protected HashMap<String, CacheObject> cacheObjects = new HashMap();
+	protected WeakHashMap<String, CacheObject> cacheObjects = new WeakHashMap();
 	private long cachedSpace = 0;
 	protected int maximumCacheObjectAge = 30000; //In miliseconds
 	protected boolean isRunning = false;
@@ -46,7 +47,7 @@ public class CacheWeakReference implements CacheInterface<String, CacheObject>{
 	}
 	
 	public boolean isObjectCached(File file){
-		return cacheObjects.containsKey(file.getAbsolutePath());
+		return isObjectCached(file.getAbsolutePath());
 	}	
 	
 	public CacheObject getCachedObject(String path){
@@ -54,7 +55,9 @@ public class CacheWeakReference implements CacheInterface<String, CacheObject>{
 		if(!isObjectCached(path)) tmpObject = null;
 		else{
 			tmpObject = cacheObjects.get(path);
-			tmpObject.objectAccessed();
+			//A little redudndant, but weak reference getter
+			if(tmpObject != null) tmpObject.objectAccessed();
+			else tmpObject = null;
 		}
 		return tmpObject;
 	}

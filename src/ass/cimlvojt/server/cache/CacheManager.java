@@ -46,7 +46,7 @@ public class CacheManager implements CacheInterface<String, CacheObject>{
 	}
 	
 	public boolean isObjectCached(File file){
-		return cacheObjects.containsKey(file.getAbsolutePath());
+		return isObjectCached(file.getAbsolutePath());
 	}	
 	
 	public CacheObject getCachedObject(String path){
