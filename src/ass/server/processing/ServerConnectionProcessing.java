@@ -237,7 +237,7 @@ public class ServerConnectionProcessing extends Thread{
 			cacheReference.cacheNewObject(fileToTransfer);
 			outputToClient.write(createByteArrayFromFile(fileToTransfer));
 		}
-		
+		//outputToClient.write(createByteArrayFromFile(fileToTransfer));
 
 		outputToClient.flush();			
 		outputToClient.close();

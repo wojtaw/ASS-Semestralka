@@ -46,7 +46,7 @@ public class WebServer {
 	}
 	
 	private void createThreadPool() {
-		threadPool = new ThreadPool(11,requestQueue,this);
+		threadPool = new ThreadPool(20,requestQueue,this);
 		threadPool.poolIsOn = true;
 		threadPool.start();
 	}
@@ -98,11 +98,6 @@ public class WebServer {
 	            	tmpStr = inFromClient.readLine();
 	            }	            
 
-	            /*
-	            ApplicationOutput.printLog("---------------\n\nSomething recieved, now will be processed");
-	            ApplicationOutput.printLog(clientSentence.toString());
-	            ApplicationOutput.printLog("---------------\n\n");
-	            */
 	            processIncomingRequest(clientSentence.toString(),connectionSocket);
 	            
 	         }	    	

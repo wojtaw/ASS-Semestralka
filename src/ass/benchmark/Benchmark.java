@@ -39,7 +39,7 @@ public class Benchmark {
 		}
 		private static void sendRequest() {
 			try	{			
-					String requestToSend = "GET /test.jpg HTTP/1.1\r\n" +
+					String requestToSend = "GET /protected1.jpg HTTP/1.1\r\n" +
 							"Host: localhost:80\r\n"; 
 							
 					StringBuilder answerRecieved = new StringBuilder();
