@@ -8,6 +8,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import ass.server.cache.CacheManager;
+import ass.server.cache.CacheWeakReference;
 
 import java.lang.reflect.*;
 
@@ -23,7 +24,7 @@ public class CacheManagerWeakTest {
 	}
 	@Test		
 	public void buildCacheWithDefaultCapacity(){
-		CacheManager myManager = new CacheManager();
+		CacheWeakReference myManager = new CacheWeakReference();
 		assertEquals(10*1000000, myManager.getCapacity());	
 		
 		myManager.stopCacheManager();
@@ -31,7 +32,7 @@ public class CacheManagerWeakTest {
 	
 	@Test		
 	public void buildCacheWithCustomCapacity(){
-		CacheManager myManager = new CacheManager(5*1000000);
+		CacheWeakReference myManager = new CacheWeakReference(5*1000000);
 		assertEquals(5*1000000, myManager.getCapacity());	
 		
 		myManager.stopCacheManager();
@@ -39,7 +40,7 @@ public class CacheManagerWeakTest {
 	
 	@Test		
 	public void cacheOneFileAndTestPresence(){
-		CacheManager myManager = new CacheManager();
+		CacheWeakReference myManager = new CacheWeakReference();
 		assertTrue(myManager.cacheNewObject(testPath1));
 		assertTrue(myManager.isObjectCached(testPath1));
 		
@@ -48,7 +49,7 @@ public class CacheManagerWeakTest {
 	
 	@Test		
 	public void cacheFileAndAttemptToAddDuplicate(){
-		CacheManager myManager = new CacheManager();
+		CacheWeakReference myManager = new CacheWeakReference();
 		assertTrue(myManager.cacheNewObject(testPath1));
 		assertTrue(myManager.isObjectCached(testPath1));		
 		assertFalse(myManager.cacheNewObject(testPath1));
@@ -58,13 +59,13 @@ public class CacheManagerWeakTest {
 	
 	@Test		
 	public void testIsFreeSpaceFunctionality() throws Exception{
-		CacheManager myManager = new CacheManager(1500000);
+		CacheWeakReference myManager = new CacheWeakReference(1500000);
 		//Test file1 is large 665658, test file 2 758905
 		myManager.cacheNewObject(testPath1);
 		myManager.cacheNewObject(testPath2);		
 		
 		
-		Method myMethod = CacheManager.class.getDeclaredMethod("isFreeSpaceFor", new Class[]{long.class});
+		Method myMethod = CacheWeakReference.class.getDeclaredMethod("isFreeSpaceFor", new Class[]{long.class});
 		myMethod.setAccessible(true);
 		
 		Boolean returnedValue = (Boolean)myMethod.invoke(myManager, 10101);
@@ -80,7 +81,7 @@ public class CacheManagerWeakTest {
 	
 	@Test
 	public void testCleanSpaceFuncitonality(){
-		CacheManager myManager = new CacheManager(1500000);
+		CacheWeakReference myManager = new CacheWeakReference(1500000);
 		//Test file1 is large 665658, 
 		//test file 2 758905
 		//test file 3 1165658
@@ -102,7 +103,7 @@ public class CacheManagerWeakTest {
 	
 	@Test
 	public void testCacheCleaner(){
-		CacheManager myManager = new CacheManager(1500000,3000);
+		CacheWeakReference myManager = new CacheWeakReference(1500000,3000);
 		myManager.cacheNewObject(testPath1);
 		myManager.cacheNewObject(testPath2);	
 		assertTrue(myManager.isObjectCached(testPath1));
